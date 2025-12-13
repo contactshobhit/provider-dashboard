@@ -1,0 +1,29 @@
+{
+  "status": "success",
+  "tickets": [
+    {
+      "id": "TKT-000568",
+      "subject": "Question about PTAN linkage to NPI",
+      "lastUpdate": "2025-12-12T15:35:00Z",
+      "status": "Awaiting Provider Response",
+      "priority": "Medium",
+      "patientName": "N/A"
+    },
+    {
+      "id": "TKT-000567",
+      "subject": "General Inquiry - Login Issue",
+      "lastUpdate": "2025-12-11T16:45:00Z",
+      "status": "Pending",
+      "priority": "High",
+      "patientName": "John D."
+    },
+    {
+      "id": "TKT-000566",
+      "subject": "PA-001235 Determination Question",
+      "lastUpdate": "2025-12-10T09:10:00Z",
+      "status": "Resolved",
+      "priority": "Low",
+      "patientName": "Jane S."
+    }
+  ]
+}

@@ -1,11 +1,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
-import AppBar from '@mui/material/AppBar';
+import HeaderAppBar from './HeaderAppBar';
 import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import Button from '@mui/material/Button';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import MainMenu from './MainMenu';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
@@ -69,43 +65,12 @@ const DashboardLayout = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       {/* AppBar */}
-      <AppBar
-        position="fixed"
-        color="primary"
-        sx={{
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-          backgroundColor: (theme) => theme.palette.primary.dark,
-          boxShadow: 3,
-        }}
-      >
-        <Toolbar sx={{ minHeight: 56, px: 2, alignItems: 'center' }}>
-          <IconButton color="inherit" edge="start" sx={{ mr: 2, display: { sm: 'none' } }}>
-            <MenuIcon />
-          </IconButton>
-          <Typography
-            variant="h5"
-            noWrap
-            component="div"
-            sx={{ flexGrow: 1, fontWeight: 700, letterSpacing: 1 }}
-          >
-            Provider Portal
-          </Typography>
-          <Typography variant="body1" sx={{ mr: 2 }}>{providerName}</Typography>
-          <Button
-            color="inherit"
-            startIcon={<ExitToAppIcon />}
-            onClick={() => { localStorage.removeItem('sessionToken'); window.location.reload(); }}
-            sx={{ fontWeight: 600 }}
-          >
-            Sign Out
-          </Button>
-        </Toolbar>
-      </AppBar>
+      <HeaderAppBar />
       {/* Sidebar */}
       <MainMenu />
       {/* Main Content */}
-      <Box component="main" sx={{ flexGrow: 1, boxSizing: 'border-box', width: 'calc(100vw - 240px)', minWidth: 0, overflowX: 'auto', bgcolor: 'background.default', pl: '20px', pr: '20px', pt: 4, pb: 0, ml: `${drawerWidth}px`, marginLeft: 0 }}>
-        <Toolbar sx={{ minHeight: 48 }} />
+      <Box component="main" sx={{ flexGrow: 1, boxSizing: 'border-box', width: 'calc(100vw - 240px)', minWidth: 0, overflowX: 'auto', bgcolor: 'background.default', pl: '20px', pr: '20px', pt: 4, pb: 0, ml: `${drawerWidth}px`, marginLeft: 0, marginTop: '64px' }}>
+        <Toolbar sx={{ minHeight: 16, p: 0 }} />
         <WelcomeBanner />
         <Typography variant="h4" sx={{ fontWeight: 700, mt: 2, mb: 2 }}>Provider Dashboard</Typography>
         <Grid container spacing={2}>

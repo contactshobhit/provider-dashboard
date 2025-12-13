@@ -20,6 +20,7 @@ const FacilityProviderSection = ({ values, errors, onChange }) => {
             required
             error={!!errors.facilityName}
             helperText={errors.facilityName}
+            InputLabelProps={{ sx: { color: 'primary.dark', '& .MuiInputLabel-asterisk': { color: 'primary.dark' } } }}
           />
         </Grid>
         <Grid columns={3}>
@@ -33,6 +34,7 @@ const FacilityProviderSection = ({ values, errors, onChange }) => {
             type="number"
             error={!!errors.facilityNpi}
             helperText={errors.facilityNpi}
+            InputLabelProps={{ sx: { color: 'primary.dark', '& .MuiInputLabel-asterisk': { color: 'primary.dark' } } }}
           />
         </Grid>
         <Grid columns={3}>
@@ -45,6 +47,7 @@ const FacilityProviderSection = ({ values, errors, onChange }) => {
             required
             error={!!errors.facilityCcn}
             helperText={errors.facilityCcn}
+            InputLabelProps={{ sx: { color: 'primary.dark', '& .MuiInputLabel-asterisk': { color: 'primary.dark' } } }}
           />
         </Grid>
         <Grid columns={8}>
@@ -57,6 +60,7 @@ const FacilityProviderSection = ({ values, errors, onChange }) => {
             required
             error={!!errors.facilityAddress1}
             helperText={errors.facilityAddress1}
+            InputLabelProps={{ sx: { color: 'primary.dark', '& .MuiInputLabel-asterisk': { color: 'primary.dark' } } }}
           />
         </Grid>
         <Grid columns={4}>
@@ -80,6 +84,7 @@ const FacilityProviderSection = ({ values, errors, onChange }) => {
             required
             error={!!errors.facilityCity}
             helperText={errors.facilityCity}
+            InputLabelProps={{ sx: { color: 'primary.dark', '& .MuiInputLabel-asterisk': { color: 'primary.dark' } } }}
           />
         </Grid>
         <Grid columns={4}>
@@ -93,6 +98,7 @@ const FacilityProviderSection = ({ values, errors, onChange }) => {
             select
             error={!!errors.facilityState}
             helperText={errors.facilityState}
+            InputLabelProps={{ sx: { color: 'primary.dark', '& .MuiInputLabel-asterisk': { color: 'primary.dark' } } }}
           >
             {US_STATES.map((state) => (
               <MenuItem key={state} value={state}>{state}</MenuItem>
@@ -109,6 +115,7 @@ const FacilityProviderSection = ({ values, errors, onChange }) => {
             required
             error={!!errors.facilityZip}
             helperText={errors.facilityZip}
+            InputLabelProps={{ sx: { color: 'primary.dark', '& .MuiInputLabel-asterisk': { color: 'primary.dark' } } }}
           />
         </Grid>
       </Grid>

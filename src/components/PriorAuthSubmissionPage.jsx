@@ -1,6 +1,10 @@
 
 import React from 'react';
-import { Box, Typography, Stepper, Step, StepLabel, Card, CardContent, Button, TextField, Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
+import HeaderAppBar from './HeaderAppBar';
+import MainMenu from './MainMenu';
+import Toolbar from '@mui/material/Toolbar';
+import Box from '@mui/material/Box';
+import { Typography, Stepper, Step, StepLabel, Card, CardContent, Button, TextField, Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import SubmissionDetailsSection from './pa/SubmissionDetailsSection';
 import ProcedureCodesArraySection from './pa/ProcedureCodesArraySection';
@@ -114,10 +118,14 @@ const PriorAuthSubmissionPage = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 800, mx: 'auto', mt: 4, mb: 4 }}>
-      <Typography variant="h4" sx={{ fontWeight: 700, mb: 3 }}>
-        New Prior Authorization Request
-      </Typography>
+    <Box sx={{ display: 'flex' }}>
+      <HeaderAppBar />
+      <MainMenu />
+      <Box component="main" sx={{ flexGrow: 1, boxSizing: 'border-box', width: 'calc(100vw - 240px)', minWidth: 0, overflowX: 'auto', bgcolor: 'background.default', pl: '20px', pr: '20px', pt: 4, pb: 0, ml: '240px', marginLeft: 0 }}>
+        <Toolbar sx={{ minHeight: 48 }} />
+        <Typography variant="h4" sx={{ fontWeight: 700, mb: 3 }}>
+          New Prior Authorization Request
+        </Typography>
       <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
         {steps.map((label) => (
           <Step key={label}>
@@ -280,6 +288,7 @@ const PriorAuthSubmissionPage = () => {
           {snackbarMsg}
         </Alert>
       </Snackbar>
+      </Box>
     </Box>
   );
 };

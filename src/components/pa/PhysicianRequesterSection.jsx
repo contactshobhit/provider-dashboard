@@ -38,6 +38,7 @@ const PhysicianRequesterSection = ({ values, errors, onChange }) => {
             required
             error={!!errors.requesterName}
             helperText={errors.requesterName}
+            InputLabelProps={{ sx: { color: 'primary.dark', '& .MuiInputLabel-asterisk': { color: 'primary.dark' } } }}
           />
         </Grid>
         <Grid columns={4}>
@@ -50,6 +51,7 @@ const PhysicianRequesterSection = ({ values, errors, onChange }) => {
             required
             error={!!errors.requesterPhone}
             helperText={errors.requesterPhone}
+            InputLabelProps={{ sx: { color: 'primary.dark', '& .MuiInputLabel-asterisk': { color: 'primary.dark' } } }}
           />
         </Grid>
         <Grid columns={4}>
@@ -62,6 +64,7 @@ const PhysicianRequesterSection = ({ values, errors, onChange }) => {
             required
             error={!!errors.requesterEmail}
             helperText={errors.requesterEmail}
+            InputLabelProps={{ sx: { color: 'primary.dark', '& .MuiInputLabel-asterisk': { color: 'primary.dark' } } }}
           />
         </Grid>
       </Grid>

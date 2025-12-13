@@ -1,0 +1,25 @@
+{
+  "status": "success",
+  "data": {
+    "totalRecords": 2500,
+    "pageSize": 50,
+    "currentPage": 1,
+    "records": [
+      { "id": "PA-001234", "patientName": "John D.", "requestDate": "2025-11-20", "serviceType": "MRI Scan", "status": "Approved", "determinationDate": "2025-11-22", "submittedRecords": 5, "peerToPeerRequested": false },
+      { "id": "PA-001235", "patientName": "Sarah K.", "requestDate": "2025-11-21", "serviceType": "Chemotherapy", "status": "Pending", "determinationDate": "N/A", "submittedRecords": 10, "peerToPeerRequested": true },
+      { "id": "PA-001236", "patientName": "Robert M.", "requestDate": "2025-11-15", "serviceType": "Physical Therapy", "status": "Denied", "determinationDate": "2025-11-18", "submittedRecords": 3, "peerToPeerRequested": false },
+      { "id": "PA-001237", "patientName": "Morgan K.", "requestDate": "2025-11-23", "serviceType": "Surgery", "status": "Draft", "determinationDate": "N/A", "submittedRecords": 2, "peerToPeerRequested": false },
+      { "id": "PA-001238", "patientName": "Chris P.", "requestDate": "2025-11-24", "serviceType": "X-Ray", "status": "Expired", "determinationDate": "2025-11-30", "submittedRecords": 1, "peerToPeerRequested": false },
+      { "id": "PA-001239", "patientName": "Sam R.", "requestDate": "2025-11-25", "serviceType": "Lab Test", "status": "Approved", "determinationDate": "2025-11-27", "submittedRecords": 4, "peerToPeerRequested": true },
+      { "id": "PA-001240", "patientName": "Jane S.", "requestDate": "2025-11-26", "serviceType": "Ultrasound", "status": "Pending", "determinationDate": "N/A", "submittedRecords": 6, "peerToPeerRequested": false },
+      { "id": "PA-001241", "patientName": "Pat L.", "requestDate": "2025-11-27", "serviceType": "Blood Work", "status": "Denied", "determinationDate": "2025-11-29", "submittedRecords": 2, "peerToPeerRequested": false },
+      { "id": "PA-001242", "patientName": "Lee W.", "requestDate": "2025-11-28", "serviceType": "CT Scan", "status": "Draft", "determinationDate": "N/A", "submittedRecords": 3, "peerToPeerRequested": true },
+      { "id": "PA-001243", "patientName": "Kim M.", "requestDate": "2025-11-29", "serviceType": "MRI Scan", "status": "Expired", "determinationDate": "2025-12-01", "submittedRecords": 8, "peerToPeerRequested": false },
+      { "id": "PA-001244", "patientName": "Jordan F.", "requestDate": "2025-11-30", "serviceType": "CT Scan", "status": "Approved", "determinationDate": "2025-12-02", "submittedRecords": 5, "peerToPeerRequested": false },
+      { "id": "PA-001245", "patientName": "Taylor B.", "requestDate": "2025-12-01", "serviceType": "Surgery", "status": "Pending", "determinationDate": "N/A", "submittedRecords": 7, "peerToPeerRequested": true },
+      { "id": "PA-001246", "patientName": "Casey N.", "requestDate": "2025-12-02", "serviceType": "Physical Therapy", "status": "Denied", "determinationDate": "2025-12-04", "submittedRecords": 2, "peerToPeerRequested": false },
+      { "id": "PA-001247", "patientName": "Riley Q.", "requestDate": "2025-12-03", "serviceType": "Lab Test", "status": "Draft", "determinationDate": "N/A", "submittedRecords": 4, "peerToPeerRequested": true },
+      { "id": "PA-001248", "patientName": "Drew V.", "requestDate": "2025-12-04", "serviceType": "X-Ray", "status": "Expired", "determinationDate": "2025-12-06", "submittedRecords": 1, "peerToPeerRequested": false }
+    ]
+  }
+}

@@ -16,6 +16,7 @@ const BeneficiaryInfoSection = ({ values, errors, onChange }) => {
             required
             error={!!errors.beneficiaryLastName}
             helperText={errors.beneficiaryLastName}
+            InputLabelProps={{ sx: { color: 'primary.dark', '& .MuiInputLabel-asterisk': { color: 'primary.dark' } } }}
           />
         </Grid>
         <Grid columns={6}>
@@ -28,6 +29,7 @@ const BeneficiaryInfoSection = ({ values, errors, onChange }) => {
             required
             error={!!errors.beneficiaryFirstName}
             helperText={errors.beneficiaryFirstName}
+            InputLabelProps={{ sx: { color: 'primary.dark', '& .MuiInputLabel-asterisk': { color: 'primary.dark' } } }}
           />
         </Grid>
         <Grid columns={6}>
@@ -40,6 +42,7 @@ const BeneficiaryInfoSection = ({ values, errors, onChange }) => {
             required
             error={!!errors.medicareId}
             helperText={errors.medicareId}
+            InputLabelProps={{ sx: { color: 'primary.dark', '& .MuiInputLabel-asterisk': { color: 'primary.dark' } } }}
           />
         </Grid>
         <Grid columns={6}>
@@ -51,7 +54,7 @@ const BeneficiaryInfoSection = ({ values, errors, onChange }) => {
             onChange={onChange}
             fullWidth
             required
-            InputLabelProps={{ shrink: true }}
+            InputLabelProps={{ shrink: true, sx: { color: 'primary.dark', '& .MuiInputLabel-asterisk': { color: 'primary.dark' } } }}
             error={!!errors.beneficiaryDob}
             helperText={errors.beneficiaryDob}
           />

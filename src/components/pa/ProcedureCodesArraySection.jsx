@@ -19,6 +19,7 @@ const ProcedureCodesArraySection = ({ procedureCodes, modifiers, units, errors, 
               required={idx === 0}
               error={!!(errors.procedureCodes && errors.procedureCodes[idx])}
               helperText={errors.procedureCodes && errors.procedureCodes[idx]}
+              InputLabelProps={{ sx: { color: 'primary.dark', '& .MuiInputLabel-asterisk': { color: 'primary.dark' } } }}
             />
           </Grid>
           <Grid columns={3}>
@@ -41,6 +42,7 @@ const ProcedureCodesArraySection = ({ procedureCodes, modifiers, units, errors, 
               required={idx === 0}
               error={!!(errors.units && errors.units[idx])}
               helperText={errors.units && errors.units[idx]}
+              InputLabelProps={{ sx: { color: 'primary.dark', '& .MuiInputLabel-asterisk': { color: 'primary.dark' } } }}
             />
           </Grid>
           <Grid columns={2}>

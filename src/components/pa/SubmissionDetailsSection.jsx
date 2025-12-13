@@ -33,7 +33,7 @@ const SubmissionDetailsSection = ({ values, errors, onChange, onArrayChange }) =
       <Grid container spacing={2}>
         <Grid columns={12} sm={6}>
           <FormControl fullWidth required>
-            <InputLabel>Submission Type</InputLabel>
+            <InputLabel sx={{ color: 'primary.dark', '& .MuiInputLabel-asterisk': { color: 'primary.dark' } }}>Submission Type</InputLabel>
             <Select
               name="submissionType"
               value={values.submissionType}
@@ -49,7 +49,7 @@ const SubmissionDetailsSection = ({ values, errors, onChange, onArrayChange }) =
         </Grid>
         <Grid columns={12} sm={6}>
           <FormControl fullWidth required>
-            <InputLabel>Location of Service</InputLabel>
+            <InputLabel sx={{ color: 'primary.dark', '& .MuiInputLabel-asterisk': { color: 'primary.dark' } }}>Location of Service</InputLabel>
             <Select
               name="locationOfService"
               value={values.locationOfService}

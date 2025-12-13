@@ -1,0 +1,11 @@
+{
+  "status": "success",
+  "data": {
+    "pendingPAsCount": 14,
+    "recentDeterminationsCount": 55,
+    "approvedIn7Days": 42,
+    "deniedIn7Days": 13,
+    "openTicketsCount": 3,
+    "recentP2PRequestsCount": 7
+  }
+}

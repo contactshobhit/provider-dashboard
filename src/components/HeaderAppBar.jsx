@@ -23,7 +23,11 @@ const HeaderAppBar = () => (
         variant="h5"
         noWrap
         component="div"
-        sx={{ flexGrow: 1, fontWeight: 700, letterSpacing: 1 }}
+        sx={{ flexGrow: 1, fontWeight: 700, letterSpacing: 1, cursor: 'pointer', userSelect: 'none' }}
+        onClick={() => window.location.href = '/dashboard'}
+        aria-label="Go to Dashboard"
+        tabIndex={0}
+        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') window.location.href = '/dashboard'; }}
       >
         Provider Portal
       </Typography>

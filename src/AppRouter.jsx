@@ -9,8 +9,7 @@ import PriorAuthSearchPage from './components/PriorAuthSearchPage';
 import DashboardLayout from './components/DashboardLayout';
 
 import SupportChatPage from './components/SupportChatPage';
-// Placeholder component
-const PeerToPeerRequestPage = () => <div style={{padding:32}}><h2>Peer-to-Peer Request</h2><p>Peer-to-peer request form coming soon.</p></div>;
+import PeerToPeerRequestPage from './components/PeerToPeerRequestPage';
 
 const AppRouter = () => (
   <Router>
@@ -20,6 +19,7 @@ const AppRouter = () => (
       <Route path="/pa/search" element={<PriorAuthSearchPage />} />
       <Route path="/support/tickets" element={<SupportChatPage />} />
       <Route path="/p2p/request" element={<PeerToPeerRequestPage />} />
+      <Route path="/pa/p2p" element={<PeerToPeerRequestPage />} />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   </Router>

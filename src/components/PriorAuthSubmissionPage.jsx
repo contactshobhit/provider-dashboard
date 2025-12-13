@@ -1,11 +1,12 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import HeaderAppBar from './HeaderAppBar';
 import MainMenu from './MainMenu';
 import Toolbar from '@mui/material/Toolbar';
 import Box from '@mui/material/Box';
 import { Typography, Stepper, Step, StepLabel, Card, CardContent, Button, TextField, Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { fetchPARecords } from '../api/pa';
 import SubmissionDetailsSection from './pa/SubmissionDetailsSection';
 import ProcedureCodesArraySection from './pa/ProcedureCodesArraySection';
 import BeneficiaryInfoSection from './pa/BeneficiaryInfoSection';
@@ -51,42 +52,77 @@ const initialValues = {
   requesterEmail: '',
 };
 
-const PriorAuthSubmissionPage = () => {
-      const navigate = useNavigate();
-      const [snackbarOpen, setSnackbarOpen] = React.useState(false);
-      const [snackbarMsg, setSnackbarMsg] = React.useState('');
-      const [cancelDialogOpen, setCancelDialogOpen] = React.useState(false);
-        const handleCancel = () => setCancelDialogOpen(true);
-        const handleCancelConfirm = () => {
-          setCancelDialogOpen(false);
-          navigate('/dashboard');
-        };
-        const handleCancelClose = () => setCancelDialogOpen(false);
-      // Mock save as draft
-      const handleSaveDraft = async () => {
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 800));
-        setSnackbarMsg('Draft saved successfully.');
-        setSnackbarOpen(true);
-        setTimeout(() => {
-          setSnackbarOpen(false);
-          navigate('/dashboard');
-        }, 1500);
-      };
-    const [files, setFiles] = React.useState([]);
-    const [uploadProgress, setUploadProgress] = React.useState([]);
 
-    const handleFilesChange = (newFiles) => {
-      setFiles(newFiles);
-      setUploadProgress(newFiles.map(() => 0));
-    };
+const PriorAuthSubmissionPage = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [snackbarMsg, setSnackbarMsg] = React.useState('');
+  const [cancelDialogOpen, setCancelDialogOpen] = React.useState(false);
+  const handleCancel = () => setCancelDialogOpen(true);
+  const handleCancelConfirm = () => {
+    setCancelDialogOpen(false);
+    navigate('/dashboard');
+  };
+  const handleCancelClose = () => setCancelDialogOpen(false);
+  // Mock save as draft
+  const handleSaveDraft = async () => {
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 800));
+    setSnackbarMsg('Draft saved successfully.');
+    setSnackbarOpen(true);
+    setTimeout(() => {
+      setSnackbarOpen(false);
+      navigate('/dashboard');
+    }, 1500);
+  };
+  const [files, setFiles] = React.useState([]);
+  const [uploadProgress, setUploadProgress] = React.useState([]);
+  const handleFilesChange = (newFiles) => {
+    setFiles(newFiles);
+    setUploadProgress(newFiles.map(() => 0));
+  };
   const [activeStep, setActiveStep] = React.useState(0);
   const [values, setValues] = React.useState(initialValues);
   const [errors, setErrors] = React.useState({});
 
+  // Fast-Track Resubmission: Check for paId and utn in query params
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const paId = params.get('paId');
+    const utn = params.get('utn');
+    if (paId && utn) {
+      setValues((prev) => ({
+        ...prev,
+        submissionType: 'resubmission',
+        previousUTN: utn,
+      }));
+      // Optionally fetch and prefill patient data
+      fetchPARecords().then((res) => {
+        const record = res.data.records.find((r) => r.id === paId);
+        if (record) {
+          setValues((prev) => ({
+            ...prev,
+            beneficiaryLastName: record.patientName?.split(' ').slice(-1)[0] || '',
+            beneficiaryFirstName: record.patientName?.split(' ').slice(0, -1).join(' ') || '',
+            // Add more fields as needed, e.g., anticipatedDateOfService, etc.
+          }));
+        }
+      });
+    }
+  }, [location.search]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setValues((prev) => ({ ...prev, [name]: value }));
+    // Clear previousUTN error on change
+    if (name === 'previousUTN') {
+      setErrors((prev) => ({ ...prev, previousUTN: undefined }));
+    }
+    // If user changes submissionType away from 'resubmission', clear previousUTN
+    if (name === 'submissionType' && value !== 'resubmission') {
+      setValues((prev) => ({ ...prev, previousUTN: '' }));
+    }
   };
 
   // For array fields (procedureCodes, modifiers, units, diagnosisCodes)
@@ -97,6 +133,18 @@ const PriorAuthSubmissionPage = () => {
       arr[idx] = value;
       return { ...prev, [field]: arr };
     });
+  };
+
+  // Validation for Previous UTN
+  const validateStep1 = () => {
+    const newErrors = {};
+    if (values.submissionType === 'resubmission') {
+      if (!values.previousUTN || values.previousUTN.length !== 14) {
+        newErrors.previousUTN = 'Previous UTN must be exactly 14 digits';
+      }
+    }
+    setErrors((prev) => ({ ...prev, ...newErrors }));
+    return Object.keys(newErrors).length === 0;
   };
 
   // Add/remove logic for procedure code rows
@@ -246,7 +294,12 @@ const PriorAuthSubmissionPage = () => {
           {activeStep < steps.length - 1 ? (
             <Button
               variant="contained"
-              onClick={() => setActiveStep((prev) => prev + 1)}
+              onClick={() => {
+                if (activeStep === 0) {
+                  if (!validateStep1()) return;
+                }
+                setActiveStep((prev) => prev + 1);
+              }}
               color="primary"
             >
               Next

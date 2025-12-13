@@ -97,6 +97,32 @@ const PriorAuthSearchPage = () => {
         <Button color="primary" sx={{ fontWeight: 700 }} onClick={() => window.location.href = `/pa/details/${params.value}`}>{params.value}</Button>
       ),
     },
+    {
+      field: 'utn',
+      headerName: 'UTN',
+      width: 160,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: (params) => (
+        params.row.status === 'Approved' || params.row.status === 'Denied' ? (
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', width: '100%' }}>
+            <Typography
+              sx={{
+                fontWeight: 600,
+                fontSize: 14,
+                color: 'text.primary',
+                fontFamily: 'inherit',
+                letterSpacing: 0,
+              }}
+            >
+              {params.value || ''}
+            </Typography>
+          </Box>
+        ) : null
+      ),
+      sortable: false,
+      filterable: false,
+    },
     { field: 'patientName', headerName: 'Patient Name', width: 140, headerAlign: 'center', align: 'center' },
     { field: 'serviceType', headerName: 'Service Type', width: 140, headerAlign: 'center', align: 'center' },
     {
@@ -105,7 +131,9 @@ const PriorAuthSearchPage = () => {
       width: 120,
       headerAlign: 'center',
       align: 'center',
-      valueFormatter: (params) => params.value ? params.value.slice(0, 10) : '',
+      renderCell: (params) => (
+        <span>{params.value ? params.value.slice(0, 10) : 'N/A'}</span>
+      ),
     },
     {
       field: 'status',
@@ -114,7 +142,7 @@ const PriorAuthSearchPage = () => {
       headerAlign: 'center',
       align: 'center',
       renderCell: (params) => (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', width: '100%' }}>
           <Chip
             label={params.value}
             color={statusChipColor(params.value)}
@@ -129,7 +157,16 @@ const PriorAuthSearchPage = () => {
       width: 140,
       headerAlign: 'center',
       align: 'center',
-      valueFormatter: (params) => (params.value && params.value !== 'N/A') ? params.value.slice(0, 10) : 'N/A',
+      renderCell: (params) => {
+        const status = params.row.status;
+        const determinationDate = params.value;
+        const determinedStatuses = ['Approved', 'Denied'];
+        if (determinedStatuses.includes(status) && determinationDate && determinationDate !== 'N/A') {
+          return <span>{determinationDate.slice(0, 10)}</span>;
+        } else {
+          return <span>N/A</span>;
+        }
+      },
     },
     { field: 'submittedRecords', headerName: 'Records Submitted', width: 140, headerAlign: 'center', align: 'center' },
     {
@@ -185,6 +222,16 @@ const PriorAuthSearchPage = () => {
             { label: 'View Determination Letter', action: handleViewLetter },
             { label: 'View Supporting Records', action: handleViewRecords },
             { label: 'Request Peer-to-Peer Review', action: () => { window.location.href = `/pa/p2p/${row.id}`; handleMenuClose(); } },
+            // Fast-Track Resubmission
+            { label: 'Resubmit PA', action: () => {
+                // Navigate to /pa/new with ?paId=PA_ID&utm=UTN
+                const params = new URLSearchParams();
+                params.set('paId', row.id);
+                if (row.utn) params.set('utn', row.utn);
+                window.location.href = `/pa/new?${params.toString()}`;
+                handleMenuClose();
+              }
+            },
           ];
         } else if (row.status === 'Pending') {
           menuOptions = [
@@ -249,6 +296,14 @@ const PriorAuthSearchPage = () => {
                 value={status}
                 onChange={e => setStatus(e.target.value)}
                 fullWidth
+                sx={{ minWidth: { xs: 180, sm: 200 }, maxWidth: 260 }}
+                SelectProps={{
+                  MenuProps: {
+                    PaperProps: {
+                      style: { minWidth: 200 }
+                    }
+                  }
+                }}
               >
                 {statusOptions.map(opt => (
                   <MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>
@@ -291,11 +346,44 @@ const PriorAuthSearchPage = () => {
         </Box>
         <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
           <Box sx={style}>
-            <Typography variant="h6" gutterBottom>Determination Letter</Typography>
-            <Typography variant="body1">Determination Letter Placeholder for {modalLetterId}</Typography>
-            <Box mt={2} textAlign="right">
-              <Button variant="contained" onClick={() => setModalOpen(false)}>Close</Button>
-            </Box>
+            {(() => {
+              const pa = records.find(r => r.id === modalLetterId);
+              if (!pa) return <Typography>Record not found.</Typography>;
+              return (
+                <>
+                  <Typography variant="h6" gutterBottom>Determination Letter</Typography>
+                  <Box sx={{ mb: 2, p: 1, bgcolor: '#f5f7fa', borderRadius: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>PA ID:</Typography>
+                      <Typography sx={{ fontFamily: 'monospace', fontWeight: 600 }}>{pa.id}</Typography>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 700, ml: 2 }}>Status:</Typography>
+                      <Chip label={pa.status} color={statusChipColor(pa.status)} size="small" />
+                    </Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>Determination Date:</Typography>
+                      <Typography sx={{ fontFamily: 'monospace' }}>{pa.determinationDate && pa.determinationDate !== 'N/A' ? pa.determinationDate : 'N/A'}</Typography>
+                    </Box>
+                    {(pa.status === 'Approved' || pa.status === 'Denied') && pa.utn && (
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>UTN:</Typography>
+                        <TextField
+                          value={pa.utn}
+                          InputProps={{ readOnly: true }}
+                          size="small"
+                          sx={{ width: 200, fontFamily: 'monospace', fontWeight: 700, bgcolor: 'white' }}
+                          inputProps={{ style: { fontFamily: 'monospace', fontWeight: 700, fontSize: 16 } }}
+                        />
+                        <Button size="small" onClick={() => {navigator.clipboard.writeText(pa.utn)}}>Copy</Button>
+                      </Box>
+                    )}
+                  </Box>
+                  <Typography variant="body1">Determination Letter Placeholder for {modalLetterId}</Typography>
+                  <Box mt={2} textAlign="right">
+                    <Button variant="contained" onClick={() => setModalOpen(false)}>Close</Button>
+                  </Box>
+                </>
+              );
+            })()}
           </Box>
         </Modal>
       </Box>

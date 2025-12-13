@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import NewTicketForm from './NewTicketForm';
 import HeaderAppBar from './HeaderAppBar';
 import MainMenu from './MainMenu';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,8 +12,11 @@ import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import { fetchSupportTickets } from '../api/support';
+import { createSupportTicket } from '../api/supportTicketsApi';
+import Snackbar from '@mui/material/Snackbar';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -21,12 +25,17 @@ import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import AddIcon from '@mui/icons-material/Add';
 
+
 const SupportChatPage = () => {
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [statusFilter, setStatusFilter] = useState('');
+  const [newTicketOpen, setNewTicketOpen] = useState(false);
+  const [newTicketLoading, setNewTicketLoading] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '' });
 
   useEffect(() => {
     fetchSupportTickets()
@@ -66,40 +75,77 @@ const SupportChatPage = () => {
       <Box component="main" sx={{ flexGrow: 1, boxSizing: 'border-box', width: 'calc(100vw - 240px)', minWidth: 0, overflowX: 'auto', bgcolor: 'background.default', pl: '20px', pr: '20px', pt: 4, pb: 0, ml: '240px', marginLeft: 0, height: '100vh', display: 'flex', marginTop: '64px' }}>
         <Toolbar sx={{ minHeight: 48 }} />
         {/* Split Pane */}
-        <Box sx={{ width: 350, minWidth: 350, maxWidth: 350, borderRight: 1, borderColor: 'divider', bgcolor: 'background.paper', display: 'flex', flexDirection: 'column', height: 'calc(100vh - 64px)' }}>
+        <Box sx={{ width: 300, minWidth: 300, maxWidth: 300, borderRight: 1, borderColor: 'divider', bgcolor: 'background.paper', display: 'flex', flexDirection: 'column', height: 'calc(100vh - 64px)', position: 'relative' }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ p: 2, pb: 1 }}>
             <Typography variant="h6" sx={{ fontWeight: 700 }}>
               Support Tickets
             </Typography>
-            <Button variant="contained" startIcon={<AddIcon />} size="small" sx={{ minWidth: 0, px: 1.5, py: 0.5 }}>
+            <Button variant="contained" startIcon={<AddIcon />} size="small" sx={{ minWidth: 0, px: 1.5, py: 0.5 }} onClick={() => setNewTicketOpen(true)}>
               NEW TICKET
             </Button>
+                {/* New Ticket Modal */}
+                <NewTicketForm
+                  open={newTicketOpen}
+                  onClose={() => setNewTicketOpen(false)}
+                  paOptions={[]}
+                  loading={newTicketLoading}
+                  onSubmit={async (ticket) => {
+                    setNewTicketLoading(true);
+                    try {
+                      const res = await createSupportTicket(ticket);
+                      if (res.success) {
+                        setTickets(ts => [res.ticket, ...ts]);
+                        setSelectedTicket(res.ticket);
+                        setSnackbar({ open: true, message: `Ticket ${res.ticket.id} created successfully.` });
+                        setNewTicketOpen(false);
+                      }
+                    } finally {
+                      setNewTicketLoading(false);
+                    }
+                  }}
+                />
+                <Snackbar
+                  open={snackbar.open}
+                  autoHideDuration={4000}
+                  onClose={() => setSnackbar({ ...snackbar, open: false })}
+                  message={snackbar.message}
+                  anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                />
           </Stack>
           <Divider />
-          <Box sx={{ px: 2, py: 1, display: 'flex', gap: 1 }}>
-            <TextField
-              size="small"
-              placeholder="Search..."
-              variant="outlined"
-              sx={{ flex: 1 }}
-              // value and onChange to be implemented
-            />
-            <TextField
-              select
-              size="small"
-              label="Status"
-              variant="outlined"
-              sx={{ minWidth: 140 }}
-              SelectProps={{ native: true }}
-              // value and onChange to be implemented
-            >
-              <option value="">All</option>
-              <option value="Pending">Pending</option>
-              <option value="Resolved">Resolved</option>
-              <option value="Awaiting Provider Response">Awaiting Provider Response</option>
-            </TextField>
+          <Box sx={{ px: 2, py: 1, display: 'flex', gap: 1, width: '100%' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, width: '100%' }}>
+              <TextField
+                size="small"
+                placeholder="Search..."
+                variant="outlined"
+                fullWidth
+                // value and onChange to be implemented
+              />
+              <TextField
+                select
+                size="small"
+                label="Status"
+                variant="outlined"
+                fullWidth
+                sx={{ minWidth: 180, maxWidth: '100%' }}
+                value={statusFilter}
+                onChange={e => setStatusFilter(e.target.value || '')}
+                SelectProps={{
+                  displayEmpty: true,
+                  renderValue: (selected) => selected ? selected : 'All',
+                }}
+              >
+                <MenuItem value="">
+                  <em>All</em>
+                </MenuItem>
+                <MenuItem value="Pending">Pending</MenuItem>
+                <MenuItem value="Resolved">Resolved</MenuItem>
+                <MenuItem value="Awaiting Provider Response">Awaiting Provider Response</MenuItem>
+              </TextField>
+            </Box>
           </Box>
-          <List sx={{ flexGrow: 1, overflowY: 'auto' }}>
+          <List sx={{ flexGrow: 1, overflowY: 'auto', bgcolor: 'background.paper', minHeight: 0 }}>
             {loading ? (
               <ListItem><ListItemText primary="Loading tickets..." /></ListItem>
             ) : error ? (
@@ -137,38 +183,36 @@ const SupportChatPage = () => {
           </List>
         </Box>
         {/* Conversation Pane */}
-        <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', height: 'calc(100vh - 64px)' }}>
+        <Box sx={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', height: 'calc(100vh - 64px)', position: 'relative', bgcolor: '#f8fafc' }}>
           {/* Conversation Header */}
           {selectedTicket ? (
-            <Card elevation={0} sx={{ borderRadius: 0, borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper', p: 0 }}>
-              <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', py: 2, px: 3 }}>
-                <Box>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.secondary', fontSize: 13 }}>
-                    {selectedTicket.id}
-                  </Typography>
-                  <Typography variant="h6" sx={{ fontWeight: 700, color: 'text.primary', fontSize: 18 }}>
-                    {selectedTicket.subject}
-                  </Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Chip label={selectedTicket.status} 
-                    color={selectedTicket.status === 'Pending' ? 'info' : selectedTicket.status === 'Resolved' ? 'success' : selectedTicket.status === 'Awaiting Provider Response' ? 'warning' : 'default'}
-                    size="small"
-                    sx={{ fontWeight: 600, fontSize: 13 }}
-                  />
-                  {selectedTicket.status !== 'Resolved' && (
-                    <Button variant="outlined" color="error" size="small">
-                      CLOSE TICKET
-                    </Button>
-                  )}
-                </Box>
-              </CardContent>
-            </Card>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 3, py: 2, borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper', minHeight: 72 }}>
+              <Box>
+                <Typography variant="subtitle1" sx={{ fontWeight: 700, color: 'primary.main', fontSize: 16, mb: 0.5 }}>
+                  {selectedTicket.id}
+                </Typography>
+                <Typography variant="body1" sx={{ fontWeight: 500, color: 'text.primary', fontSize: 16 }}>
+                  {selectedTicket.subject}
+                </Typography>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Chip label={selectedTicket.status}
+                  color={selectedTicket.status === 'Pending' ? 'info' : selectedTicket.status === 'Resolved' ? 'success' : selectedTicket.status === 'Awaiting Provider Response' ? 'warning' : 'default'}
+                  size="small"
+                  sx={{ fontWeight: 600, fontSize: 13 }}
+                />
+                {selectedTicket.status !== 'Resolved' && (
+                  <Button variant="outlined" color="error" size="small">
+                    CLOSE TICKET
+                  </Button>
+                )}
+              </Box>
+            </Box>
           ) : (
             <Box sx={{ p: 3 }}><Typography variant="h6">No ticket selected</Typography></Box>
           )}
-          <Divider />
-          <Box sx={{ flexGrow: 1, overflowY: 'auto', p: 2, bgcolor: '#f8fafc', display: 'flex', flexDirection: 'column' }}>
+          {/* Message History */}
+          <Box sx={{ flexGrow: 1, overflowY: 'auto', px: 3, pt: 2, pb: 0, bgcolor: '#f8fafc', display: 'flex', flexDirection: 'column', minHeight: 0, boxSizing: 'border-box', paddingBottom: '92px' }}>
             {selectedTicket && selectedTicket.messages && selectedTicket.messages.length > 0 ? (
               selectedTicket.messages.map((msg, idx) => (
                 <Box key={idx} sx={{ display: 'flex', flexDirection: 'column', alignItems: msg.sender === 'Provider' ? 'flex-end' : 'flex-start', width: '100%' }}>
@@ -193,8 +237,8 @@ const SupportChatPage = () => {
               <Typography variant="body2" color="text.secondary">No messages yet.</Typography>
             )}
           </Box>
-          <Divider />
-          <Box sx={{ display: 'flex', alignItems: 'flex-end', p: 2, borderTop: 1, borderColor: 'divider', bgcolor: 'background.paper', gap: 1 }}>
+          {/* Message Composer (fixed to bottom) */}
+          <Box sx={{ position: 'absolute', left: 0, right: 0, bottom: 0, bgcolor: 'background.paper', borderTop: 1, borderColor: 'divider', px: 3, py: 2, display: 'flex', alignItems: 'flex-end', gap: 1, zIndex: 2, minHeight: 76 }}>
             <TextField
               fullWidth
               multiline
@@ -203,7 +247,7 @@ const SupportChatPage = () => {
               placeholder="Type your message..."
               value={message}
               onChange={e => setMessage(e.target.value)}
-              sx={{ mr: 1, background: 'white' }}
+              sx={{ background: 'white', borderRadius: 1, mr: 1 }}
               InputProps={{ style: { fontSize: 16 } }}
             />
             <Button variant="text" color="primary" sx={{ minWidth: 0, p: 1 }}>
@@ -223,7 +267,7 @@ const SupportChatPage = () => {
                 messages: [...(selectedTicket.messages || []), { sender: 'Provider', text: message, time: new Date().toLocaleString() }],
               } : t));
               setMessage('');
-            }} disabled={!message.trim()} sx={{ ml: 1, px: 3, py: 1.2, fontWeight: 700, fontSize: 15 }}>
+            }} disabled={!message.trim()} sx={{ ml: 1, px: 3, py: 1.2, fontWeight: 700, fontSize: 15, minWidth: 100 }}>
               SEND
             </Button>
           </Box>

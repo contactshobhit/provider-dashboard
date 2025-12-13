@@ -69,8 +69,16 @@ const SubmissionDetailsSection = ({ values, errors, onChange, onArrayChange }) =
               name="previousUTN"
               label="Previous UTN"
               value={values.previousUTN}
-              onChange={onChange}
+              onChange={e => {
+                // Only allow numeric input, max 14 chars
+                const val = e.target.value.replace(/[^0-9]/g, '').slice(0, 14);
+                onChange({ target: { name: 'previousUTN', value: val } });
+              }}
               fullWidth
+              required
+              inputProps={{ maxLength: 14, inputMode: 'numeric', pattern: '[0-9]*' }}
+              error={!!errors.previousUTN}
+              helperText={errors.previousUTN}
             />
           </Grid>
         )}
@@ -83,6 +91,7 @@ const SubmissionDetailsSection = ({ values, errors, onChange, onArrayChange }) =
             onChange={onChange}
             fullWidth
             InputLabelProps={{ shrink: true }}
+            sx={{ width: 220 }}
           />
         </Grid>
         <Grid columns={12} sm={6}>
@@ -94,6 +103,7 @@ const SubmissionDetailsSection = ({ values, errors, onChange, onArrayChange }) =
             onChange={onChange}
             fullWidth
             InputLabelProps={{ shrink: true }}
+            sx={{ width: 220 }}
           />
         </Grid>
         {/* Procedure Codes, Modifiers, Units (up to 4) */}

@@ -12,7 +12,7 @@ const menuItems = [
   { text: 'Dashboard', icon: <HomeOutlinedIcon />, path: '/dashboard' },
   { text: 'Search & Status', icon: <SearchOutlinedIcon />, path: '/pa/search' },
   { text: 'Support Chat', icon: <ChatBubbleOutlineRoundedIcon />, path: '/support/tickets' },
-  { text: 'Peer-to-Peer Request', icon: <SupervisorAccountOutlinedIcon />, path: '/p2p/request' },
+  { text: 'Peer-to-Peer Request', icon: <SupervisorAccountOutlinedIcon />, path: '/pa/p2p' },
 ];
 
 const drawerWidth = 240;
@@ -57,6 +57,7 @@ const MainMenu = () => {
         </ListItem>
         {menuItems.map((item) => {
           const isActive = location.pathname === item.path;
+          const isPeerToPeer = item.text === 'Peer-to-Peer Request';
           return (
             <ListItem key={item.text} disablePadding>
               <ListItemButton
@@ -75,7 +76,14 @@ const MainMenu = () => {
                 }}
               >
                 <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
+                <ListItemText
+                  primary={item.text}
+                  primaryTypographyProps={isPeerToPeer ? {
+                    fontSize: 15,
+                    noWrap: true,
+                    sx: { whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 160 }
+                  } : {}}
+                />
               </ListItemButton>
             </ListItem>
           );

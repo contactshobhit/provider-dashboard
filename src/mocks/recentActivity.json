@@ -4,6 +4,9 @@
     {
       "id": "PA-001234",
       "type": "Prior Auth Request",
+      "itemType": "PA",
+      "linkedId": "PA-001234",
+      "statusChanged": "Pending",
       "patientId": "P-45890",
       "patientName": "John D.",
       "lastUpdated": "2025-12-12T14:30:00Z",
@@ -20,6 +23,9 @@
     {
       "id": "PA-001235",
       "type": "Prior Auth Request",
+      "itemType": "PA",
+      "linkedId": "PA-001235",
+      "statusChanged": "Approved",
       "patientId": "P-45891",
       "patientName": "Jane S.",
       "lastUpdated": "2025-12-11T09:45:00Z",
@@ -28,6 +34,9 @@
     {
       "id": "PA-001236",
       "type": "Prior Auth Request",
+      "itemType": "PA",
+      "linkedId": "PA-001236",
+      "statusChanged": "Denied",
       "patientId": "P-45892",
       "patientName": "Sam R.",
       "lastUpdated": "2025-12-10T16:30:00Z",
@@ -44,6 +53,9 @@
     {
       "id": "PA-001237",
       "type": "Prior Auth Request",
+      "itemType": "PA",
+      "linkedId": "PA-001237",
+      "statusChanged": "Pending",
       "patientId": "P-45893",
       "patientName": "Chris P.",
       "lastUpdated": "2025-12-09T14:00:00Z",
@@ -52,6 +64,9 @@
     {
       "id": "PA-001238",
       "type": "Prior Auth Request",
+      "itemType": "PA",
+      "linkedId": "PA-001238",
+      "statusChanged": "Approved",
       "patientId": "P-45894",
       "patientName": "Alex T.",
       "lastUpdated": "2025-12-08T11:30:00Z",
@@ -68,10 +83,43 @@
     {
       "id": "PA-001239",
       "type": "Prior Auth Request",
+      "itemType": "PA",
+      "linkedId": "PA-001239",
+      "statusChanged": "Denied",
       "patientId": "P-45895",
       "patientName": "Morgan K.",
       "lastUpdated": "2025-12-07T15:10:00Z",
       "currentStatus": "Denied"
+    },
+    {
+      "id": "CLM-100123",
+      "type": "Additional Documentation Request",
+      "patientName": "N/A",
+      "lastUpdated": "2025-12-13T10:30:00Z",
+      "currentStatus": "Requested",
+      "itemType": "ADR",
+      "linkedId": "CLM-100123",
+      "statusChanged": "Requested"
+    },
+    {
+      "id": "CLM-100124",
+      "type": "Additional Documentation Request",
+      "patientName": "N/A",
+      "lastUpdated": "2025-12-13T12:00:00Z",
+      "currentStatus": "Submitted",
+      "itemType": "ADR",
+      "linkedId": "CLM-100124",
+      "statusChanged": "Submitted"
+    },
+    {
+      "id": "CLM-100125",
+      "type": "Additional Documentation Request",
+      "patientName": "N/A",
+      "lastUpdated": "2025-12-12T09:30:00Z",
+      "currentStatus": "Under Review",
+      "itemType": "ADR",
+      "linkedId": "CLM-100125",
+      "statusChanged": "Under Review"
     },
     {
       "id": "TKT-000570",

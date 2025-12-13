@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import HeaderAppBar from './HeaderAppBar';
 import MainMenu from './MainMenu';
 import Toolbar from '@mui/material/Toolbar';
@@ -45,6 +46,29 @@ const PriorAuthSearchPage = () => {
   const [endDate, setEndDate] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalLetterId, setModalLetterId] = useState(null);
+  const [highlightedId, setHighlightedId] = useState(null);
+  const highlightTimeout = useRef(null);
+  const location = useLocation();
+  // On mount, check for paId in query params
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const paId = params.get('paId');
+    if (paId) {
+      setSearch(paId);
+      setHighlightedId(paId);
+      if (highlightTimeout.current) clearTimeout(highlightTimeout.current);
+      highlightTimeout.current = setTimeout(() => setHighlightedId(null), 4000);
+    }
+    // Cleanup on unmount
+    return () => { if (highlightTimeout.current) clearTimeout(highlightTimeout.current); };
+    // eslint-disable-next-line
+  }, []);
+
+  // Clear highlight on user interaction
+  const clearHighlight = () => {
+    if (highlightedId) setHighlightedId(null);
+    if (highlightTimeout.current) clearTimeout(highlightTimeout.current);
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -284,7 +308,7 @@ const PriorAuthSearchPage = () => {
               <TextField
                 label="Global Search"
                 value={search}
-                onChange={e => setSearch(e.target.value)}
+                onChange={e => { setSearch(e.target.value); clearHighlight(); }}
                 fullWidth
                 placeholder="Search by PA ID or Patient Name"
               />
@@ -294,7 +318,7 @@ const PriorAuthSearchPage = () => {
                 select
                 label="Status"
                 value={status}
-                onChange={e => setStatus(e.target.value)}
+                onChange={e => { setStatus(e.target.value); clearHighlight(); }}
                 fullWidth
                 sx={{ minWidth: { xs: 180, sm: 200 }, maxWidth: 260 }}
                 SelectProps={{
@@ -315,7 +339,7 @@ const PriorAuthSearchPage = () => {
                 <DatePicker
                   label="Start Date"
                   value={startDate}
-                  onChange={setStartDate}
+                  onChange={d => { setStartDate(d); clearHighlight(); }}
                   slots={{ textField: TextField }}
                   slotProps={{ textField: { fullWidth: true } }}
                   enableAccessibleFieldDOMStructure={false}
@@ -327,7 +351,7 @@ const PriorAuthSearchPage = () => {
                 <DatePicker
                   label="End Date"
                   value={endDate}
-                  onChange={setEndDate}
+                  onChange={d => { setEndDate(d); clearHighlight(); }}
                   slots={{ textField: TextField }}
                   slotProps={{ textField: { fullWidth: true } }}
                   enableAccessibleFieldDOMStructure={false}
@@ -346,7 +370,20 @@ const PriorAuthSearchPage = () => {
             getRowId={row => row.id}
             disableSelectionOnClick
             autoHeight={false}
+            getRowClassName={(params) =>
+              highlightedId && params.id === highlightedId ? 'highlight-pa-row' : ''
+            }
+            onCellClick={clearHighlight}
+            onSortModelChange={clearHighlight}
+            onFilterModelChange={clearHighlight}
           />
+                {/* Highlight style */}
+                <style>{`
+                  .highlight-pa-row {
+                    background-color: #fff9c4 !important;
+                    transition: background-color 0.5s;
+                  }
+                `}</style>
         </Box>
         <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
           <Box sx={style}>

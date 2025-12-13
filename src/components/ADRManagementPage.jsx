@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import Snackbar from '@mui/material/Snackbar';
 import HeaderAppBar from './HeaderAppBar';
@@ -18,9 +18,31 @@ const ADRManagementPage = () => {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [search, setSearch] = useState('');
+  const [highlightedId, setHighlightedId] = useState(null);
+  const highlightTimeout = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
   const [snackbar, setSnackbar] = useState({ open: false, message: '' });
+  // On mount, check for claimId in query params
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const claimId = params.get('claimId');
+    if (claimId) {
+      setSearch(claimId);
+      setHighlightedId(claimId);
+      if (highlightTimeout.current) clearTimeout(highlightTimeout.current);
+      highlightTimeout.current = setTimeout(() => setHighlightedId(null), 4000);
+    }
+    return () => { if (highlightTimeout.current) clearTimeout(highlightTimeout.current); };
+    // eslint-disable-next-line
+  }, []);
+
+  // Clear highlight on user interaction
+  const clearHighlight = () => {
+    if (highlightedId) setHighlightedId(null);
+    if (highlightTimeout.current) clearTimeout(highlightTimeout.current);
+  };
 
   const loadRecords = () => {
     setLoading(true);
@@ -73,6 +95,17 @@ const ADRManagementPage = () => {
       ) : null },
   ];
 
+  // Filter records by global search
+  const filteredRecords = records.filter((row) => {
+    if (!search) return true;
+    const q = search.toLowerCase();
+    return (
+      (row.claimId && row.claimId.toLowerCase().includes(q)) ||
+      (row.paId && row.paId.toLowerCase().includes(q)) ||
+      (row.utn && row.utn.toLowerCase().includes(q))
+    );
+  });
+
   return (
     <Box sx={{ display: 'flex' }}>
       <HeaderAppBar />
@@ -80,9 +113,18 @@ const ADRManagementPage = () => {
       <Box component="main" sx={{ flexGrow: 1, boxSizing: 'border-box', width: 'calc(100vw - 240px)', minWidth: 0, overflowX: 'auto', bgcolor: 'background.default', pl: '20px', pr: '20px', pt: 4, pb: 0, ml: '240px', marginLeft: 0 }}>
         <Toolbar sx={{ minHeight: 48 }} />
         <Typography variant="h5" gutterBottom>ADR Management Dashboard</Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, mt: 1 }}>
+          <input
+            type="text"
+            placeholder="Search by Claim Number, PA ID, or UTN"
+            value={search}
+            onChange={e => { setSearch(e.target.value); clearHighlight(); }}
+            style={{ fontSize: 15, padding: '6px 12px', borderRadius: 4, border: '1px solid #ccc', minWidth: 220, maxWidth: 350 }}
+          />
+        </Box>
         <Box sx={{ height: 520, width: '100%' }}>
           <DataGrid
-            rows={records}
+            rows={filteredRecords}
             columns={columns}
             pageSize={25}
             rowsPerPageOptions={[25]}
@@ -90,6 +132,12 @@ const ADRManagementPage = () => {
             getRowId={row => row.claimId}
             disableSelectionOnClick
             autoHeight={false}
+            getRowClassName={(params) =>
+              highlightedId && params.id === highlightedId ? 'highlight-adr-row' : ''
+            }
+            onCellClick={clearHighlight}
+            onSortModelChange={clearHighlight}
+            onFilterModelChange={clearHighlight}
           />
         </Box>
         {error && <Typography color="error" sx={{ mt: 2 }}>{error}</Typography>}
@@ -100,6 +148,13 @@ const ADRManagementPage = () => {
           message={snackbar.message}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         />
+        {/* Highlight style */}
+        <style>{`
+          .highlight-adr-row {
+            background-color: #fff9c4 !important;
+            transition: background-color 0.5s;
+          }
+        `}</style>
       </Box>
     </Box>
   );

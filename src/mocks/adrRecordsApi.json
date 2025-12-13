@@ -1,0 +1,10 @@
+{
+  "status": "success",
+  "data": {
+    "records": [
+      { "claimId": "CLM-100123", "paId": "PA-001234", "utn": "98765432101234", "documentSummary": "Clinical Notes", "dueDate": "2025-12-20", "adrStatus": "Requested" },
+      { "claimId": "CLM-100124", "paId": "PA-001236", "utn": "12345678901234", "documentSummary": "Lab Results, Imaging", "dueDate": "2025-12-18", "adrStatus": "Submitted" },
+      { "claimId": "CLM-100125", "paId": "", "utn": "23456789012345", "documentSummary": "Operative Report", "dueDate": "2025-12-22", "adrStatus": "Under Review" }
+    ]
+  }
+}

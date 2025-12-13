@@ -9,7 +9,10 @@ import PriorAuthSearchPage from './components/PriorAuthSearchPage';
 import DashboardLayout from './components/DashboardLayout';
 
 import SupportChatPage from './components/SupportChatPage';
+
+import ADRManagementPage from './components/ADRManagementPage';
 import PeerToPeerRequestPage from './components/PeerToPeerRequestPage';
+import ADRSubmissionForm from './components/ADRSubmissionForm';
 
 const AppRouter = () => (
   <Router>
@@ -20,6 +23,8 @@ const AppRouter = () => (
       <Route path="/support/tickets" element={<SupportChatPage />} />
       <Route path="/p2p/request" element={<PeerToPeerRequestPage />} />
       <Route path="/pa/p2p" element={<PeerToPeerRequestPage />} />
+      <Route path="/adr/management" element={<ADRManagementPage />} />
+      <Route path="/adr/submit/:claimId" element={<ADRSubmissionForm />} />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   </Router>

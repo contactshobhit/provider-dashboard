@@ -277,10 +277,10 @@ const PriorAuthSearchPage = () => {
       <MainMenu />
       <Box component="main" sx={{ flexGrow: 1, boxSizing: 'border-box', width: 'calc(100vw - 240px)', minWidth: 0, overflowX: 'auto', bgcolor: 'background.default', pl: '20px', pr: '20px', pt: 4, pb: 0, ml: '240px', marginLeft: 0 }}>
         <Toolbar sx={{ minHeight: 48 }} />
-        <Typography variant="h5" gutterBottom>Prior Authorization Search & Status</Typography>
+        <Typography variant="h5" gutterBottom>PA Request Search & Status</Typography>
         <Box mb={2}>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={4}>
+            <Grid>
               <TextField
                 label="Global Search"
                 value={search}
@@ -289,7 +289,7 @@ const PriorAuthSearchPage = () => {
                 placeholder="Search by PA ID or Patient Name"
               />
             </Grid>
-            <Grid item xs={12} md={3}>
+            <Grid>
               <TextField
                 select
                 label="Status"
@@ -310,23 +310,27 @@ const PriorAuthSearchPage = () => {
                 ))}
               </TextField>
             </Grid>
-            <Grid item xs={6} md={2}>
+            <Grid>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DatePicker
                   label="Start Date"
                   value={startDate}
                   onChange={setStartDate}
-                  renderInput={(params) => <TextField {...params} fullWidth />}
+                  slots={{ textField: TextField }}
+                  slotProps={{ textField: { fullWidth: true } }}
+                  enableAccessibleFieldDOMStructure={false}
                 />
               </LocalizationProvider>
             </Grid>
-            <Grid item xs={6} md={2}>
+            <Grid>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DatePicker
                   label="End Date"
                   value={endDate}
                   onChange={setEndDate}
-                  renderInput={(params) => <TextField {...params} fullWidth />}
+                  slots={{ textField: TextField }}
+                  slotProps={{ textField: { fullWidth: true } }}
+                  enableAccessibleFieldDOMStructure={false}
                 />
               </LocalizationProvider>
             </Grid>

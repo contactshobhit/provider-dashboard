@@ -6,13 +6,15 @@ import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
 import SupervisorAccountOutlinedIcon from '@mui/icons-material/SupervisorAccountOutlined';
 import Button from '@mui/material/Button';
+import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurnedInOutlined';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const menuItems = [
   { text: 'Dashboard', icon: <HomeOutlinedIcon />, path: '/dashboard' },
-  { text: 'Search & Status', icon: <SearchOutlinedIcon />, path: '/pa/search' },
+  { text: 'PA Request Search & Status', icon: <SearchOutlinedIcon />, path: '/pa/search' },
   { text: 'Support Chat', icon: <ChatBubbleOutlineRoundedIcon />, path: '/support/tickets' },
   { text: 'Peer-to-Peer Request', icon: <SupervisorAccountOutlinedIcon />, path: '/pa/p2p' },
+  { text: 'ADR Management', icon: <AssignmentTurnedInOutlinedIcon />, path: '/adr/management' },
 ];
 
 const drawerWidth = 240;

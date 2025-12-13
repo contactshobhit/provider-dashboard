@@ -16,25 +16,39 @@ const RecentActivityTable = ({ data, loading, error }) => (
     ) : error ? (
       <Typography color="error" sx={{ m: 4 }}>{error}</Typography>
     ) : (
-      <Table size="small">
+      <Table size="small" padding="none">
         <TableHead>
           <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Type</TableCell>
-            <TableCell>Patient</TableCell>
-            <TableCell>Last Updated</TableCell>
-            <TableCell>Status</TableCell>
+            <TableCell sx={{ fontWeight: 700, fontSize: 14 }}>ID</TableCell>
+            <TableCell sx={{ fontWeight: 700, fontSize: 14 }}>Type</TableCell>
+            <TableCell sx={{ fontWeight: 700, fontSize: 14 }}>Patient</TableCell>
+            <TableCell sx={{ fontWeight: 700, fontSize: 14 }}>Last Updated</TableCell>
+            <TableCell sx={{ fontWeight: 700, fontSize: 14 }}>Status</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {data && data.length > 0 ? data.map((row) => (
-            <TableRow key={row.id} hover>
+            <TableRow key={row.id} hover sx={{ '& td': { py: 0.5, px: 1, fontSize: 14 } }}>
               <TableCell>{row.id}</TableCell>
               <TableCell>{row.type}</TableCell>
               <TableCell>{row.patientName}</TableCell>
               <TableCell>{new Date(row.lastUpdated).toLocaleString()}</TableCell>
               <TableCell>
-                <Chip label={row.currentStatus} color={statusColor(row.currentStatus)} size="small" />
+                <Chip
+                  label={row.currentStatus}
+                  color={
+                    row.currentStatus === 'Approved'
+                      ? 'success'
+                      : row.currentStatus === 'Denied'
+                      ? 'error'
+                      : row.currentStatus === 'Pending' || row.currentStatus === 'Awaiting Provider Response'
+                      ? 'warning'
+                      : 'default'
+                  }
+                  variant="filled"
+                  size="small"
+                  sx={{ fontWeight: 600 }}
+                />
               </TableCell>
             </TableRow>
           )) : (

@@ -1,18 +1,18 @@
 import React from 'react';
 import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar } from '@mui/material';
-import HomeIcon from '@mui/icons-material/Home';
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import SearchIcon from '@mui/icons-material/Search';
-import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
-import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineRounded';
+import SupervisorAccountOutlinedIcon from '@mui/icons-material/SupervisorAccountOutlined';
+import Button from '@mui/material/Button';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const menuItems = [
-  { text: 'Dashboard', icon: <HomeIcon />, path: '/dashboard' },
-  { text: 'Submit New Prior Auth', icon: <AddBoxIcon />, path: '/pa/new' },
-  { text: 'Search & Status', icon: <SearchIcon />, path: '/pa/search' },
-  { text: 'Support Chat', icon: <ChatBubbleIcon />, path: '/support/tickets' },
-  { text: 'Peer-to-Peer Request', icon: <SupervisorAccountIcon />, path: '/p2p/request' },
+  { text: 'Dashboard', icon: <HomeOutlinedIcon />, path: '/dashboard' },
+  { text: 'Search & Status', icon: <SearchOutlinedIcon />, path: '/pa/search' },
+  { text: 'Support Chat', icon: <ChatBubbleOutlineRoundedIcon />, path: '/support/tickets' },
+  { text: 'Peer-to-Peer Request', icon: <SupervisorAccountOutlinedIcon />, path: '/p2p/request' },
 ];
 
 const drawerWidth = 240;
@@ -32,18 +32,54 @@ const MainMenu = () => {
     >
       <Toolbar />
       <List>
-        {menuItems.map((item) => (
-          <ListItem key={item.text} disablePadding>
-            <ListItemButton
-              selected={location.pathname === item.path}
-              onClick={() => navigate(item.path)}
-              sx={location.pathname === item.path ? { bgcolor: 'action.selected', fontWeight: 'bold' } : {}}
-            >
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        {/* Prominent Submit New PA Button */}
+        <ListItem sx={{ justifyContent: 'center', py: 2 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddBoxRoundedIcon />}
+            fullWidth
+            sx={{
+              fontWeight: 700,
+              borderRadius: 2,
+              boxShadow: 2,
+              backgroundColor: 'primary.main',
+              color: 'white',
+              '&:hover': {
+                backgroundColor: 'primary.dark',
+              },
+            }}
+            onClick={() => navigate('/pa/new')}
+            aria-label="Submit New PA"
+          >
+            Submit New PA
+          </Button>
+        </ListItem>
+        {menuItems.map((item) => {
+          const isActive = location.pathname === item.path;
+          return (
+            <ListItem key={item.text} disablePadding>
+              <ListItemButton
+                selected={isActive}
+                onClick={() => navigate(item.path)}
+                sx={{
+                  ...(isActive && {
+                    bgcolor: 'action.selected',
+                    fontWeight: 'bold',
+                    borderLeft: 4,
+                    borderColor: 'primary.main',
+                    borderStyle: 'solid',
+                    borderRadius: 0,
+                  }),
+                  pl: 3,
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.text} />
+              </ListItemButton>
+            </ListItem>
+          );
+        })}
       </List>
     </Drawer>
   );

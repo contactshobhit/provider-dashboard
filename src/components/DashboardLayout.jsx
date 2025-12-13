@@ -5,6 +5,7 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Button from '@mui/material/Button';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import MainMenu from './MainMenu';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
@@ -12,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import SummaryCard from './SummaryCard';
 import RecentActivityTable from './RecentActivityTable';
+import WelcomeBanner from './WelcomeBanner';
 import { fetchDashboardSummary, fetchRecentActivity } from '../api/dashboard';
 
 const drawerWidth = 240;
@@ -67,73 +69,95 @@ const DashboardLayout = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       {/* AppBar */}
-      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-        <Toolbar>
+      <AppBar
+        position="fixed"
+        color="primary"
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          backgroundColor: (theme) => theme.palette.primary.dark,
+          boxShadow: 3,
+        }}
+      >
+        <Toolbar sx={{ minHeight: 56, px: 2, alignItems: 'center' }}>
           <IconButton color="inherit" edge="start" sx={{ mr: 2, display: { sm: 'none' } }}>
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h5"
+            noWrap
+            component="div"
+            sx={{ flexGrow: 1, fontWeight: 700, letterSpacing: 1 }}
+          >
             Provider Portal
           </Typography>
           <Typography variant="body1" sx={{ mr: 2 }}>{providerName}</Typography>
-          <Button color="inherit" onClick={() => { localStorage.removeItem('sessionToken'); window.location.reload(); }}>Log Out</Button>
+          <Button
+            color="inherit"
+            startIcon={<ExitToAppIcon />}
+            onClick={() => { localStorage.removeItem('sessionToken'); window.location.reload(); }}
+            sx={{ fontWeight: 600 }}
+          >
+            Sign Out
+          </Button>
         </Toolbar>
       </AppBar>
       {/* Sidebar */}
       <MainMenu />
       {/* Main Content */}
-      <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3, ml: `${drawerWidth}px` }}>
-        <Toolbar />
-        <Typography variant="h4" gutterBottom>Provider Dashboard</Typography>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={3}>
+      <Box component="main" sx={{ flexGrow: 1, boxSizing: 'border-box', width: 'calc(100vw - 240px)', minWidth: 0, overflowX: 'auto', bgcolor: 'background.default', pl: '20px', pr: '20px', pt: 4, pb: 0, ml: `${drawerWidth}px`, marginLeft: 0 }}>
+        <Toolbar sx={{ minHeight: 48 }} />
+        <WelcomeBanner />
+        <Typography variant="h4" sx={{ fontWeight: 700, mt: 2, mb: 2 }}>Provider Dashboard</Typography>
+        <Grid container spacing={2}>
+          <Grid columns={12} md={4}>
             <SummaryCard
               title="Pending PAs"
               count={summary?.pendingPAsCount}
               subtitle="Prior Auth requests pending review"
-              linkPath="/prior-auth?status=pending"
               loading={summaryLoading}
               error={summaryError}
               onRefresh={loadSummary}
+              onClick={() => window.location.href = '/pa/search?status=pending'}
+              cardSx={{
+                bgcolor: '#FFF8E1',
+                borderTop: '5px solid #FFC107',
+              }}
+              countColor="#FFA000"
             />
           </Grid>
-          <Grid item xs={12} md={3}>
+          <Grid columns={12} md={4}>
             <SummaryCard
               title="Recent Determinations"
               count={summary?.recentDeterminationsCount}
               subtitle={`Approved: ${summary?.approvedIn7Days || 0} | Denied: ${summary?.deniedIn7Days || 0}`}
-              linkPath="/prior-auth?filter=determined7days"
               loading={summaryLoading}
               error={summaryError}
               onRefresh={loadSummary}
+              onClick={() => window.location.href = '/pa/search?filter=determined7days'}
+              cardSx={{
+                bgcolor: '#F5F5F5',
+              }}
+              countColor="#1976D2"
             />
           </Grid>
-          <Grid item xs={12} md={3}>
+          <Grid columns={12} md={4}>
             <SummaryCard
               title="Open Support Tickets"
               count={summary?.openTicketsCount}
               subtitle="Tickets awaiting provider or support response"
-              linkPath="/ticketing"
               loading={summaryLoading}
               error={summaryError}
               onRefresh={loadSummary}
-            />
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <SummaryCard
-              title="Recent P2P Requests"
-              count={summary?.recentP2PRequestsCount}
-              subtitle="Peer-to-Peer requests in last 30 days"
-              linkPath="/peer-to-peer"
-              loading={summaryLoading}
-              error={summaryError}
-              onRefresh={loadSummary}
-              actionLabel="Submit New PA"
-              onAction={() => window.location.href = '/pa/new'}
+              onClick={() => window.location.href = '/support/tickets'}
+              cardSx={{
+                bgcolor: '#FFEBEE',
+                borderTop: '5px solid #F44336',
+              }}
+              countColor="#F44336"
             />
           </Grid>
         </Grid>
-        <Box mt={6}>
+        <Box mt={2}>
           <Typography variant="h6" gutterBottom>Recent Activity</Typography>
           <RecentActivityTable data={activity} loading={activityLoading} error={activityError} />
         </Box>

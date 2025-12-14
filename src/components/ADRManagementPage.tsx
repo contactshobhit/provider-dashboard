@@ -7,6 +7,7 @@ import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { fetchADRRecords } from '../api/adr';
 import { ADRRecord, ADRStatus } from '../types';
 import { getStatusChipColor } from '../utils/statusStyles';
+import { formatDateUS } from '../utils/dateFormat';
 
 interface LocationState {
   adrSubmitted?: boolean;
@@ -112,7 +113,7 @@ const ADRManagementPage: React.FC = () => {
         const isDueSoon = (due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24) <= 3;
         return (
           <span style={{ color: isDueSoon ? 'red' : undefined, fontWeight: isDueSoon ? 700 : 400 }}>
-            {params.value as string}
+            {formatDateUS(params.value as string)}
           </span>
         );
       },

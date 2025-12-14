@@ -95,7 +95,7 @@ const NewTicketForm: React.FC<NewTicketFormProps> = ({
     category as string
   );
 
-  const finalStatuses: PAStatus[] = ['Approved', 'Denied', 'Partial Denial'];
+  const finalStatuses: PAStatus[] = ['Affirmed', 'Non-Affirmed', 'Partial Affirmation'];
   const filteredPaOptions = paOptions.filter((pa) => finalStatuses.includes(pa.status));
 
   return (

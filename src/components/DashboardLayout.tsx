@@ -88,7 +88,7 @@ const DashboardLayout: React.FC = () => {
           <SummaryCard
             title="Recent Determinations"
             count={summary?.recentDeterminationsCount}
-            subtitle={`Approved: ${summary?.approvedIn7Days || 0} | Denied: ${summary?.deniedIn7Days || 0}`}
+            subtitle={`Affirmed: ${summary?.affirmedIn7Days || 0} | Non-Affirmed: ${summary?.nonAffirmedIn7Days || 0} (Last 7 days)`}
             loading={summaryLoading}
             error={summaryError}
             onRefresh={loadSummary}

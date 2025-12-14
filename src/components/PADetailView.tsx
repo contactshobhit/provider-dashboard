@@ -72,7 +72,7 @@ const PADetailView: React.FC = () => {
 
           {/* Conditional Action Buttons */}
           <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-            {(data.currentStatus === 'Denied' || data.currentStatus === 'Partial Denial') && (
+            {(data.currentStatus === 'Non-Affirmed' || data.currentStatus === 'Partial Affirmation') && (
               <Button variant="contained" color="primary" href="/pa/p2p">
                 Request Peer-to-Peer
               </Button>
@@ -82,7 +82,7 @@ const PADetailView: React.FC = () => {
                 Upload More Documents
               </Button>
             )}
-            {data.currentStatus === 'Denied' && data.p2pExpired && (
+            {data.currentStatus === 'Non-Affirmed' && data.p2pExpired && (
               <Button variant="contained" color="secondary" href="/pa/submit">
                 Submit Resubmission
               </Button>

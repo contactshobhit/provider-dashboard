@@ -18,7 +18,7 @@ export const mockPADetails: MockPADetail[] = [
   {
     paId: 'PA-001234',
     utn: '98765432101234',
-    currentStatus: 'Approved' as PAStatus,
+    currentStatus: 'Affirmed' as PAStatus,
     determinationDate: '2025-11-22',
     requestingProvider: 'Dr. Sarah Jones',
     patientInfo: {
@@ -45,7 +45,7 @@ export const mockPADetails: MockPADetail[] = [
         eventDate: '2025-11-22 10:00 AM',
         eventDescription: 'Determination Made.',
         internalNotes: '',
-        statusChange: 'Approved',
+        statusChange: 'Affirmed',
       },
     ],
   },
@@ -83,7 +83,7 @@ export const mockPADetails: MockPADetail[] = [
   {
     paId: 'PA-001236',
     utn: '12345678901234',
-    currentStatus: 'Denied' as PAStatus,
+    currentStatus: 'Non-Affirmed' as PAStatus,
     determinationDate: '2025-11-18',
     requestingProvider: 'Dr. Robert M.',
     patientInfo: {
@@ -109,8 +109,8 @@ export const mockPADetails: MockPADetail[] = [
       {
         eventDate: '2025-11-18 11:00 AM',
         eventDescription: 'Determination Made.',
-        internalNotes: 'Denied due to missing info.',
-        statusChange: 'Denied',
+        internalNotes: 'Non-Affirmed due to missing info.',
+        statusChange: 'Non-Affirmed',
       },
     ],
     p2pExpired: true,

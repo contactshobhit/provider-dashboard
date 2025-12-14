@@ -65,7 +65,6 @@ const MainMenu: React.FC = () => {
         </ListItem>
         {menuItems.map((item) => {
           const isActive = location.pathname === item.path;
-          const isPeerToPeer = item.text === 'Peer-to-Peer Request';
           return (
             <ListItem key={item.text} disablePadding>
               <ListItemButton
@@ -86,11 +85,9 @@ const MainMenu: React.FC = () => {
                 <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
                 <ListItemText
                   primary={item.text}
-                  primaryTypographyProps={isPeerToPeer ? {
+                  primaryTypographyProps={{
                     fontSize: 15,
-                    noWrap: true,
-                    sx: { whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 160 }
-                  } : {}}
+                  }}
                 />
               </ListItemButton>
             </ListItem>

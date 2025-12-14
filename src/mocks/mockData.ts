@@ -42,7 +42,7 @@ export const mockPADetails: MockPADetail[] = [
   {
     paId: 'PA-001234',
     utn: '98765432101234',
-    currentStatus: 'Approved',
+    currentStatus: 'Affirmed',
     determinationDate: '2025-11-22',
     requestingProvider: 'Dr. Sarah Jones',
     patientInfo: {
@@ -68,7 +68,7 @@ export const mockPADetails: MockPADetail[] = [
         eventDate: '2025-11-22 10:00 AM',
         eventDescription: 'Determination Made.',
         internalNotes: '',
-        statusChange: 'Approved',
+        statusChange: 'Affirmed',
       },
     ],
   },

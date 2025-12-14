@@ -1,15 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-
-const providerName = localStorage.getItem('providerName') || 'Dr. Smith';
+import { fetchUserProfile } from '../api/user';
 
 const HeaderAppBar: React.FC = () => {
   const navigate = useNavigate();
+  const [userName, setUserName] = useState<string>('');
+
+  useEffect(() => {
+    fetchUserProfile()
+      .then((res) => {
+        const { firstName, lastName } = res.data;
+        setUserName(firstName || lastName || '');
+      })
+      .catch(() => {
+        setUserName('');
+      });
+  }, []);
 
   return (
     <AppBar
@@ -38,7 +49,7 @@ const HeaderAppBar: React.FC = () => {
         >
           Provider Portal
         </Typography>
-        <Typography variant="body1" sx={{ mr: 2 }}>{providerName}</Typography>
+        {userName && <Typography variant="body1" sx={{ mr: 2 }}>{userName}</Typography>}
         <Button
           color="inherit"
           startIcon={<ExitToAppIcon />}

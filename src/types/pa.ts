@@ -1,13 +1,13 @@
 // Prior Authorization Types
 
 export type PAStatus =
-  | 'Approved'
-  | 'Denied'
+  | 'Affirmed'
+  | 'Non-Affirmed'
   | 'Pending'
   | 'Draft'
   | 'Expired'
   | 'Resolved'
-  | 'Partial Denial';
+  | 'Partial Affirmation';
 
 export type SubmissionType = 'initial' | 'resubmission' | '';
 

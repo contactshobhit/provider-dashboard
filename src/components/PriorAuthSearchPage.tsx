@@ -12,11 +12,12 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { PARecord } from '../types';
 import { getStatusChipColor } from '../utils/statusStyles';
+import { formatDateUS } from '../utils/dateFormat';
 
 const statusOptions = [
   { value: '', label: 'All' },
-  { value: 'Approved', label: 'Approved' },
-  { value: 'Denied', label: 'Denied' },
+  { value: 'Affirmed', label: 'Affirmed' },
+  { value: 'Non-Affirmed', label: 'Non-Affirmed' },
   { value: 'Pending', label: 'Pending' },
 ];
 
@@ -135,12 +136,12 @@ const PriorAuthSearchPage: React.FC = () => {
     }
 
     let menuOptions: MenuOption[] = [];
-    if (row.status === 'Approved') {
+    if (row.status === 'Affirmed') {
       menuOptions = [
         { label: 'View Determination Letter', action: handleViewLetter },
         { label: 'View Supporting Records', action: handleViewRecords },
       ];
-    } else if (row.status === 'Denied') {
+    } else if (row.status === 'Non-Affirmed') {
       menuOptions = [
         { label: 'View Determination Letter', action: handleViewLetter },
         { label: 'View Supporting Records', action: handleViewRecords },
@@ -207,7 +208,7 @@ const PriorAuthSearchPage: React.FC = () => {
       headerAlign: 'center',
       align: 'center',
       renderCell: (params: GridRenderCellParams) =>
-        params.row.status === 'Approved' || params.row.status === 'Denied' ? (
+        params.row.status === 'Affirmed' || params.row.status === 'Non-Affirmed' ? (
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', width: '100%' }}>
             <Typography sx={{ fontWeight: 600, fontSize: 14, color: 'text.primary' }}>{params.value || ''}</Typography>
           </Box>
@@ -223,7 +224,7 @@ const PriorAuthSearchPage: React.FC = () => {
       width: 120,
       headerAlign: 'center',
       align: 'center',
-      renderCell: (params: GridRenderCellParams) => <span>{params.value ? String(params.value).slice(0, 10) : 'N/A'}</span>,
+      renderCell: (params: GridRenderCellParams) => <span>{formatDateUS(params.value as string)}</span>,
     },
     {
       field: 'status',
@@ -245,9 +246,9 @@ const PriorAuthSearchPage: React.FC = () => {
       align: 'center',
       renderCell: (params: GridRenderCellParams) => {
         const rowStatus = params.row.status;
-        const determinedStatuses = ['Approved', 'Denied'];
+        const determinedStatuses = ['Affirmed', 'Non-Affirmed'];
         if (determinedStatuses.includes(rowStatus) && params.value && params.value !== 'N/A') {
-          return <span>{String(params.value).slice(0, 10)}</span>;
+          return <span>{formatDateUS(params.value as string)}</span>;
         }
         return <span>N/A</span>;
       },
@@ -366,7 +367,7 @@ const PriorAuthSearchPage: React.FC = () => {
                         {pa.determinationDate && pa.determinationDate !== 'N/A' ? pa.determinationDate : 'N/A'}
                       </Typography>
                     </Box>
-                    {(pa.status === 'Approved' || pa.status === 'Denied') && pa.utn && (
+                    {(pa.status === 'Affirmed' || pa.status === 'Non-Affirmed') && pa.utn && (
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                         <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>UTN:</Typography>
                         <TextField
@@ -382,10 +383,21 @@ const PriorAuthSearchPage: React.FC = () => {
                       </Box>
                     )}
                   </Box>
-                  <Typography variant="body1">Determination Letter Placeholder for {modalLetterId}</Typography>
-                  <Box mt={2} textAlign="right">
-                    <Button variant="contained" onClick={() => setModalOpen(false)}>
+                  <Box sx={{ mt: 2, p: 2, bgcolor: '#f5f5f5', borderRadius: 1, border: '1px solid #e0e0e0' }}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+                      Determination Letter
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      The determination letter for {modalLetterId} is not available for preview at this time.
+                      Please contact support if you need a copy of this document.
+                    </Typography>
+                  </Box>
+                  <Box mt={3} sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+                    <Button variant="outlined" onClick={() => setModalOpen(false)}>
                       Close
+                    </Button>
+                    <Button variant="contained" disabled>
+                      Download PDF
                     </Button>
                   </Box>
                 </>

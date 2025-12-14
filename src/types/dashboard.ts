@@ -3,8 +3,8 @@
 export interface DashboardSummary {
   pendingPAsCount: number;
   recentDeterminationsCount: number;
-  approvedIn7Days: number;
-  deniedIn7Days: number;
+  affirmedIn7Days: number;
+  nonAffirmedIn7Days: number;
   openTicketsCount: number;
 }
 

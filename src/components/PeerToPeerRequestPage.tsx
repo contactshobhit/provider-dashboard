@@ -60,11 +60,11 @@ const MOCK_PROVIDER: MockProvider = {
 
 const MOCK_PA_LIST: PAListItem[] = [
   { id: 'PA-001235', status: 'Pending' },
-  { id: 'PA-001236', status: 'Denied' },
+  { id: 'PA-001236', status: 'Non-Affirmed' },
   { id: 'PA-001240', status: 'Pending' },
-  { id: 'PA-001241', status: 'Denied' },
+  { id: 'PA-001241', status: 'Non-Affirmed' },
   { id: 'PA-001245', status: 'Pending' },
-  { id: 'PA-001246', status: 'Denied' },
+  { id: 'PA-001246', status: 'Non-Affirmed' },
 ];
 
 const TIME_SLOTS = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00'];
@@ -144,7 +144,7 @@ const PeerToPeerRequestPage: React.FC = () => {
                     label="Associated PA ID"
                     onChange={handleChange}
                   >
-                    {MOCK_PA_LIST.filter((pa) => pa.status === 'Denied' || pa.status === 'Partial Denial').map(
+                    {MOCK_PA_LIST.filter((pa) => pa.status === 'Non-Affirmed' || pa.status === 'Partial Affirmation').map(
                       (pa) => (
                         <MenuItem key={pa.id} value={pa.id}>
                           {pa.id} ({pa.status})
@@ -153,7 +153,7 @@ const PeerToPeerRequestPage: React.FC = () => {
                     )}
                   </Select>
                   <Typography variant="caption" sx={{ color: errors.paId ? 'error.main' : 'text.secondary', mt: 0.5 }}>
-                    {errors.paId || 'Only denied or partially denied PAs are eligible'}
+                    {errors.paId || 'Only non-affirmed or partially affirmed PAs are eligible'}
                   </Typography>
                 </FormControl>
               </Box>

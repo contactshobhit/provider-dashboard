@@ -349,7 +349,10 @@ const PriorAuthSearchPage: React.FC = () => {
           <DataGrid
             rows={filteredRecords}
             columns={columns}
-            pageSizeOptions={[50]}
+            pageSizeOptions={[25, 50, 100]}
+            initialState={{
+              pagination: { paginationModel: { pageSize: 50 } },
+            }}
             loading={loading}
             getRowId={(row) => row.id}
             disableRowSelectionOnClick

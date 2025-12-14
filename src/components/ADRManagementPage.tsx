@@ -194,7 +194,10 @@ const ADRManagementPage: React.FC = () => {
           <DataGrid
             rows={filteredRecords}
             columns={columns}
-            pageSizeOptions={[25]}
+            pageSizeOptions={[25, 50, 100]}
+            initialState={{
+              pagination: { paginationModel: { pageSize: 25 } },
+            }}
             loading={loading}
             getRowId={(row) => row.claimId}
             disableRowSelectionOnClick

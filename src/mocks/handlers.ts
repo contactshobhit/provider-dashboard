@@ -2,6 +2,7 @@
 import { http, HttpResponse } from 'msw';
 import { mockPADetails } from './mock-api';
 import supportTicketMessagesRaw from './supportTicketMessages.json';
+import supportTicketsRaw from './supportTickets.json';
 
 interface SupportMessage {
   ticketId: string;
@@ -17,6 +18,11 @@ interface SupportTicketMessagesJson {
 const supportTicketMessages = (supportTicketMessagesRaw as SupportTicketMessagesJson).messages;
 
 export const handlers = [
+  // Support tickets list handler
+  http.get('/api/support/tickets', () => {
+    return HttpResponse.json(supportTicketsRaw);
+  }),
+
   // Support ticket messages handler
   http.get('/api/support/tickets/messages/:ticketId', ({ params }) => {
     const { ticketId } = params;

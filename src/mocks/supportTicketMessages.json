@@ -1,0 +1,53 @@
+{
+  "status": "success",
+  "messages": [
+    {
+      "ticketId": "TKT-000567",
+      "sender": "Provider",
+      "text": "I am unable to access the provider dashboard. Please assist.",
+      "time": "2025-12-11T16:46:00Z"
+    },
+    {
+      "ticketId": "TKT-000566",
+      "sender": "Provider",
+      "text": "Can you clarify the determination for PA-001235?",
+      "time": "2025-12-10T09:12:00Z"
+    },
+    {
+      "ticketId": "TKT-000566",
+      "sender": "Support",
+      "text": "The determination was based on the submitted documentation. Please see the attached notes.",
+      "time": "2025-12-10T10:00:00Z"
+    },
+    {
+      "ticketId": "TKT-000568",
+      "sender": "Provider",
+      "text": "Can you provide more information about PTAN linkage to NPI?",
+      "time": "2025-12-12T15:36:00Z"
+    },
+    {
+      "ticketId": "TKT-000568",
+      "sender": "Support",
+      "text": "Certainly! PTAN linkage to NPI is managed through the CMS portal. Do you need step-by-step instructions?",
+      "time": "2025-12-12T15:38:00Z"
+    },
+    {
+      "ticketId": "TKT-000568",
+      "sender": "Provider",
+      "text": "Yes, please send the steps.",
+      "time": "2025-12-12T15:39:00Z"
+    },
+    {
+      "ticketId": "TKT-000568",
+      "sender": "Support",
+      "text": "1. Log in to the CMS portal. 2. Navigate to the Provider Enrollment section. 3. Select 'Link PTAN to NPI'. 4. Enter your details and submit. Let us know if you encounter any issues.",
+      "time": "2025-12-12T15:41:00Z"
+    },
+    {
+      "ticketId": "TKT-000568",
+      "sender": "Provider",
+      "text": "Thank you, I was able to complete the process.",
+      "time": "2025-12-12T15:45:00Z"
+    }
+  ]
+}

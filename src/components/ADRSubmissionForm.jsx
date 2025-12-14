@@ -7,6 +7,11 @@ import { submitADRDocuments } from '../api/adrSubmission';
 const ADRSubmissionForm = ({ open = true, onClose }) => {
   const { claimId } = useParams();
   const navigate = useNavigate();
+  // Custom close handler: navigates to /adr/management
+  const handleClose = () => {
+    if (onClose) onClose();
+    navigate('/adr/management');
+  };
   const [adr, setAdr] = useState(null);
   const [loading, setLoading] = useState(true);
   const [attachments, setAttachments] = useState([]);
@@ -53,8 +58,16 @@ const ADRSubmissionForm = ({ open = true, onClose }) => {
   if (loading) return <Dialog open={open}><DialogTitle>Submit ADR Documents</DialogTitle><DialogContent>Loading...</DialogContent></Dialog>;
   if (!adr) return <Dialog open={open} onClose={onClose}><DialogTitle>Submit ADR Documents</DialogTitle><DialogContent>ADR not found.</DialogContent></Dialog>;
 
+  // Handle Escape key to close dialog
+  const handleKeyDown = (e) => {
+    if (e.key === 'Escape') {
+      handleClose();
+    }
+  };
+  if (!adr) return <Dialog open={open} onClose={handleClose}><DialogTitle>Submit ADR Documents</DialogTitle><DialogContent>ADR not found.</DialogContent></Dialog>;
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth onKeyDown={handleKeyDown}>
       <DialogTitle>Submit ADR Documents</DialogTitle>
       <DialogContent>
         <Box sx={{ mb: 2 }}>
@@ -98,7 +111,7 @@ const ADRSubmissionForm = ({ open = true, onClose }) => {
         {error && <Typography color="error" sx={{ mt: 1 }}>{error}</Typography>}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="secondary">Cancel</Button>
+        <Button onClick={handleClose} color="secondary">Cancel</Button>
         <Button onClick={handleSubmit} variant="contained" color="primary">Submit</Button>
       </DialogActions>
     </Dialog>

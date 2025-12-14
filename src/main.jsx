@@ -14,10 +14,18 @@ const theme = createTheme({
   },
 });
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <ThemeProvider theme={theme}>
-      <AppRouter />
-    </ThemeProvider>
-  </StrictMode>
-);
+async function enableMockingAndRender() {
+  if (import.meta.env.MODE === 'development') {
+    const { worker } = await import('./mocks/browser');
+    await worker.start({ onUnhandledRequest: 'bypass' });
+  }
+  createRoot(document.getElementById('root')).render(
+    <StrictMode>
+      <ThemeProvider theme={theme}>
+        <AppRouter />
+      </ThemeProvider>
+    </StrictMode>
+  );
+}
+
+enableMockingAndRender();

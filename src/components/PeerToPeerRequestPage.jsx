@@ -104,7 +104,7 @@ const PeerToPeerRequestPage = () => {
                 label="Associated PA ID"
                 onChange={handleChange}
               >
-                {MOCK_PA_LIST.map(pa => (
+                {MOCK_PA_LIST.filter(pa => pa.status === 'Denied' || pa.status === 'Partial Denial').map(pa => (
                   <MenuItem key={pa.id} value={pa.id}>{pa.id} ({pa.status})</MenuItem>
                 ))}
               </Select>
@@ -114,47 +114,81 @@ const PeerToPeerRequestPage = () => {
             <TextField fullWidth label="Contact Phone" name="phone" margin="normal" value={form.phone} onChange={handleChange} required error={!!errors.phone} helperText={errors.phone} />
             <TextField fullWidth label="Contact Email" name="email" margin="normal" value={form.email} onChange={handleChange} required error={!!errors.email} helperText={errors.email} />
             <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <TextField fullWidth label="Preferred Date 1" name="date1" type="date" margin="normal" InputLabelProps={{ shrink: true }} value={form.date1} onChange={handleChange} required error={!!errors.date1} helperText={errors.date1} />
+              {/* Preference 1: Date and Time side by side, left column */}
+              <Grid item xs={12} md={6}>
+                <div style={{ display: 'flex', flexDirection: 'row', gap: 16, marginBottom: 20, width: '100%' }}>
+                  <div style={{ width: '50%' }}>
+                    <label style={{ display: 'block', fontWeight: 600, marginBottom: 4 }}>Preferred Date 1</label>
+                    <TextField
+                      name="date1"
+                      type="date"
+                      margin="normal"
+                      InputLabelProps={{ shrink: true }}
+                      value={form.date1}
+                      onChange={handleChange}
+                      required
+                      error={!!errors.date1}
+                      helperText={errors.date1}
+                      fullWidth
+                    />
+                  </div>
+                  <div style={{ width: '50%' }}>
+                    <label style={{ display: 'block', fontWeight: 600, marginBottom: 4 }}>Time Slot 1</label>
+                    <FormControl fullWidth margin="normal" required error={!!errors.time1}>
+                      <Select
+                        labelId="time1-label"
+                        id="time1"
+                        name="time1"
+                        value={form.time1}
+                        displayEmpty
+                        onChange={handleChange}
+                        sx={{ background: '#fff', borderRadius: 1 }}
+                      >
+                        <MenuItem value="" disabled>Select time</MenuItem>
+                        {TIME_SLOTS.map(slot => (
+                          <MenuItem key={slot} value={slot}>{slot}</MenuItem>
+                        ))}
+                      </Select>
+                      {errors.time1 && <Typography color="error" variant="caption">{errors.time1}</Typography>}
+                    </FormControl>
+                  </div>
+                </div>
               </Grid>
-              <Grid item xs={6}>
-                <FormControl fullWidth margin="normal" required error={!!errors.time1}>
-                  <InputLabel id="time1-label">Time Slot 1</InputLabel>
-                  <Select
-                    labelId="time1-label"
-                    id="time1"
-                    name="time1"
-                    value={form.time1}
-                    label="Time Slot 1"
-                    onChange={handleChange}
-                  >
-                    {TIME_SLOTS.map(slot => (
-                      <MenuItem key={slot} value={slot}>{slot}</MenuItem>
-                    ))}
-                  </Select>
-                  {errors.time1 && <Typography color="error" variant="caption">{errors.time1}</Typography>}
-                </FormControl>
-              </Grid>
-              <Grid item xs={6}>
-                <TextField fullWidth label="Preferred Date 2 (optional)" name="date2" type="date" margin="normal" InputLabelProps={{ shrink: true }} value={form.date2} onChange={handleChange} />
-              </Grid>
-              <Grid item xs={6}>
-                <FormControl fullWidth margin="normal">
-                  <InputLabel id="time2-label">Time Slot 2 (optional)</InputLabel>
-                  <Select
-                    labelId="time2-label"
-                    id="time2"
-                    name="time2"
-                    value={form.time2}
-                    label="Time Slot 2 (optional)"
-                    onChange={handleChange}
-                  >
-                    <MenuItem value="">None</MenuItem>
-                    {TIME_SLOTS.map(slot => (
-                      <MenuItem key={slot} value={slot}>{slot}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+              {/* Preference 2: Date and Time side by side, right column */}
+              <Grid item xs={12} md={6}>
+                <div style={{ marginBottom: 20, width: '100%', display: 'flex', flexDirection: 'row', gap: 16, alignItems: 'flex-end' }}>
+                  <div style={{ width: '50%', display: 'flex', flexDirection: 'column' }}>
+                    <label style={{ display: 'block', fontWeight: 600, marginBottom: 4 }}>Preferred Date 2 (optional)</label>
+                    <TextField
+                      name="date2"
+                      type="date"
+                      margin="normal"
+                      InputLabelProps={{ shrink: true }}
+                      value={form.date2}
+                      onChange={handleChange}
+                      fullWidth
+                    />
+                  </div>
+                  <div style={{ width: '50%', display: 'flex', flexDirection: 'column' }}>
+                    <label style={{ display: 'block', fontWeight: 600, marginBottom: 4 }}>Time Slot 2 (optional)</label>
+                    <FormControl fullWidth margin="normal">
+                      <Select
+                        labelId="time2-label"
+                        id="time2"
+                        name="time2"
+                        value={form.time2}
+                        displayEmpty
+                        onChange={handleChange}
+                        sx={{ background: '#fff', borderRadius: 1 }}
+                      >
+                        <MenuItem value="">None</MenuItem>
+                        {TIME_SLOTS.map(slot => (
+                          <MenuItem key={slot} value={slot}>{slot}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </div>
+                </div>
               </Grid>
             </Grid>
             <TextField fullWidth label="Reason for Request" name="reason" margin="normal" required multiline minRows={3} value={form.reason} onChange={handleChange} error={!!errors.reason} helperText={errors.reason} />

@@ -16,6 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import { fetchSupportTickets } from '../api/support';
 import { createSupportTicket } from '../api/supportTicketsApi';
+import { fetchSupportTicketMessages } from '../api/supportTicketMessagesApi';
 import Snackbar from '@mui/material/Snackbar';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import Card from '@mui/material/Card';
@@ -39,17 +40,14 @@ const SupportChatPage = () => {
 
   useEffect(() => {
     fetchSupportTickets()
-      .then(res => {
-        // Add mock conversation to the first ticket
-        const mockMessages = [
-          { sender: 'Provider', text: 'Hello, I need help with a claim.', time: '2025-12-12 09:00' },
-          { sender: 'Support', text: 'Hi! Can you provide the claim number?', time: '2025-12-12 09:01' },
-          { sender: 'Provider', text: 'It is CLM-123456.', time: '2025-12-12 09:02' },
-          { sender: 'Support', text: 'Thank you. I am checking the details now.', time: '2025-12-12 09:03' },
-          { sender: 'Provider', text: 'Thank you!', time: '2025-12-12 09:04' },
-          { sender: 'Support', text: 'The claim is under review. We will update you soon.', time: '2025-12-12 09:05' },
-        ];
-        const ticketsWithMessages = res.tickets.map((t, i) => i === 0 ? { ...t, messages: mockMessages } : { ...t, messages: [] });
+      .then(async res => {
+        // Fetch messages for each ticket from the MSW API
+        const ticketsWithMessages = await Promise.all(
+          res.tickets.map(async (t) => {
+            const messages = await fetchSupportTicketMessages(t.id);
+            return { ...t, messages };
+          })
+        );
         setTickets(ticketsWithMessages);
         setSelectedTicket(ticketsWithMessages.length > 0 ? ticketsWithMessages[0] : null);
         setLoading(false);
@@ -160,7 +158,11 @@ const SupportChatPage = () => {
                 else if (ticket.status === 'Awaiting Provider Response') chipColor = 'warning';
                 return (
                   <ListItem key={ticket.id} disablePadding>
-                    <ListItemButton selected={selectedTicket && selectedTicket.id === ticket.id} onClick={() => setSelectedTicket({ ...ticket, messages: selectedTicket && selectedTicket.id === ticket.id ? selectedTicket.messages : [] })} alignItems="flex-start">
+                    <ListItemButton
+                      selected={selectedTicket && selectedTicket.id === ticket.id}
+                      onClick={() => setSelectedTicket(ticket)}
+                      alignItems="flex-start"
+                    >
                       <Box sx={{ width: '100%' }}>
                         <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.secondary', fontSize: 13 }}>
                           {ticket.id}

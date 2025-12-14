@@ -11,18 +11,18 @@
     },
     {
       "id": "TKT-000567",
-      "subject": "General Inquiry - Login Issue",
+      "subject": "Unable to access provider dashboard",
       "lastUpdate": "2025-12-11T16:45:00Z",
-      "status": "Pending",
+      "status": "Open",
       "priority": "High",
       "patientName": "John D."
     },
     {
       "id": "TKT-000566",
-      "subject": "PA-001235 Determination Question",
+      "subject": "Clarification needed on PA-001235 determination",
       "lastUpdate": "2025-12-10T09:10:00Z",
-      "status": "Resolved",
-      "priority": "Low",
+      "status": "Awaiting Provider Response",
+      "priority": "Medium",
       "patientName": "Jane S."
     }
   ]

@@ -40,10 +40,20 @@ const SubmissionDetailsSection = ({ values, errors, onChange, onArrayChange }) =
               label="Submission Type"
               onChange={onChange}
               error={!!errors.submissionType}
+              displayEmpty
+              renderValue={(selected) => {
+                const found = SUBMISSION_TYPES.find(opt => opt.value === selected);
+                return found ? found.label : (selected ? selected : '');
+              }}
+              sx={{ minWidth: 120, maxWidth: 220 }}
             >
               {SUBMISSION_TYPES.map((option) => (
                 <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
               ))}
+              {/* Show full value if not in list */}
+              {values.submissionType && !SUBMISSION_TYPES.some(opt => opt.value === values.submissionType) && (
+                <MenuItem value={values.submissionType}>{values.submissionType}</MenuItem>
+              )}
             </Select>
           </FormControl>
         </Grid>
@@ -56,10 +66,20 @@ const SubmissionDetailsSection = ({ values, errors, onChange, onArrayChange }) =
               label="Location of Service"
               onChange={onChange}
               error={!!errors.locationOfService}
+              displayEmpty
+              renderValue={(selected) => {
+                const found = LOCATIONS_OF_SERVICE.find(opt => opt.value === selected);
+                return found ? found.label : (selected ? selected : '');
+              }}
+              sx={{ minWidth: 120, maxWidth: 220 }}
             >
               {LOCATIONS_OF_SERVICE.map((option) => (
                 <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
               ))}
+              {/* Show full value if not in list */}
+              {values.locationOfService && !LOCATIONS_OF_SERVICE.some(opt => opt.value === values.locationOfService) && (
+                <MenuItem value={values.locationOfService}>{values.locationOfService}</MenuItem>
+              )}
             </Select>
           </FormControl>
         </Grid>

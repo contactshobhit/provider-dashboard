@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import Snackbar from '@mui/material/Snackbar';
 import HeaderAppBar from './HeaderAppBar';
 import MainMenu from './MainMenu';
@@ -20,60 +20,71 @@ interface LocationState {
 }
 
 const ADRManagementPage: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const initialClaimId = searchParams.get('claimId');
+
   const [records, setRecords] = useState<ADRRecord[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [search, setSearch] = useState<string>('');
-  const [highlightedId, setHighlightedId] = useState<string | null>(null);
+  const [search, setSearch] = useState<string>(initialClaimId || '');
+  const [highlightedId, setHighlightedId] = useState<string | null>(initialClaimId);
   const highlightTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasShownSnackbar = useRef<boolean>(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string }>({ open: false, message: '' });
 
+  // Set up highlight timeout on mount if there's an initial claimId
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const claimId = params.get('claimId');
-    if (claimId) {
-      setSearch(claimId);
-      setHighlightedId(claimId);
-      if (highlightTimeout.current) clearTimeout(highlightTimeout.current);
+    if (initialClaimId && highlightedId) {
       highlightTimeout.current = setTimeout(() => setHighlightedId(null), 4000);
     }
     return () => {
       if (highlightTimeout.current) clearTimeout(highlightTimeout.current);
     };
-  }, [location.search]);
+  }, [initialClaimId, highlightedId]);
 
   const clearHighlight = (): void => {
     if (highlightedId) setHighlightedId(null);
     if (highlightTimeout.current) clearTimeout(highlightTimeout.current);
   };
 
-  const loadRecords = (): void => {
+  const loadRecords = useCallback(async (): Promise<void> => {
     setLoading(true);
-    fetchADRRecords()
-      .then((res) => {
-        setRecords(res.data.records);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError('Failed to load ADR records');
-        setLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    loadRecords();
+    try {
+      const res = await fetchADRRecords();
+      setRecords(res.data.records);
+    } catch {
+      setError('Failed to load ADR records');
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
+  // Initial data fetch
   useEffect(() => {
-    const state = location.state as LocationState;
-    if (state?.adrSubmitted && state?.claimId) {
+    let cancelled = false;
+    const fetchData = async (): Promise<void> => {
+      if (cancelled) return;
+      await loadRecords();
+    };
+    void fetchData();
+    return () => { cancelled = true; };
+  }, [loadRecords]);
+
+  // Handle snackbar for successful ADR submission
+  const state = location.state as LocationState;
+  useEffect(() => {
+    if (!state?.adrSubmitted || !state?.claimId || hasShownSnackbar.current) return;
+
+    hasShownSnackbar.current = true;
+    const showSnackbar = async (): Promise<void> => {
       setSnackbar({ open: true, message: `ADR Documents for Claim ${state.claimId} submitted successfully.` });
-      loadRecords();
+      await loadRecords();
       window.history.replaceState({}, document.title);
-    }
-  }, [location.state]);
+    };
+    void showSnackbar();
+  }, [state, loadRecords]);
 
   const columns: GridColDef[] = [
     {

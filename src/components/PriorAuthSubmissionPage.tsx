@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import HeaderAppBar from './HeaderAppBar';
 import MainMenu from './MainMenu';
 import Toolbar from '@mui/material/Toolbar';
@@ -21,7 +21,7 @@ import {
   DialogActions,
   SelectChangeEvent,
 } from '@mui/material';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { fetchPARecords } from '../api/pa';
 import SubmissionDetailsSection from './pa/SubmissionDetailsSection';
 import ProcedureCodesArraySection from './pa/ProcedureCodesArraySection';
@@ -71,15 +71,31 @@ const initialValues: PASubmissionFormValues = {
 
 const PriorAuthSubmissionPage: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const paId = searchParams.get('paId');
+  const utn = searchParams.get('utn');
+
+  // Compute initial values from URL params
+  const computedInitialValues = useMemo<PASubmissionFormValues>(() => {
+    if (paId && utn) {
+      return {
+        ...initialValues,
+        submissionType: 'resubmission',
+        previousUTN: utn,
+      };
+    }
+    return initialValues;
+  }, [paId, utn]);
+
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
   const [snackbarMsg, setSnackbarMsg] = useState<string>('');
   const [cancelDialogOpen, setCancelDialogOpen] = useState<boolean>(false);
   const [files, setFiles] = useState<File[]>([]);
   const [uploadProgress, setUploadProgress] = useState<number[]>([]);
   const [activeStep, setActiveStep] = useState<number>(0);
-  const [values, setValues] = useState<PASubmissionFormValues>(initialValues);
+  const [values, setValues] = useState<PASubmissionFormValues>(computedInitialValues);
   const [errors, setErrors] = useState<FormErrors>({});
+  const hasFetchedPatientData = useRef<boolean>(false);
 
   const handleCancel = (): void => setCancelDialogOpen(true);
   const handleCancelConfirm = (): void => {
@@ -103,16 +119,10 @@ const PriorAuthSubmissionPage: React.FC = () => {
     setUploadProgress(newFiles.map(() => 0));
   };
 
+  // Fetch patient data for resubmission (only once)
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const paId = params.get('paId');
-    const utn = params.get('utn');
-    if (paId && utn) {
-      setValues((prev) => ({
-        ...prev,
-        submissionType: 'resubmission',
-        previousUTN: utn,
-      }));
+    if (paId && utn && !hasFetchedPatientData.current) {
+      hasFetchedPatientData.current = true;
       fetchPARecords().then((res) => {
         const record = res.data.records.find((r) => r.id === paId);
         if (record) {
@@ -124,7 +134,7 @@ const PriorAuthSubmissionPage: React.FC = () => {
         }
       });
     }
-  }, [location.search]);
+  }, [paId, utn]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> | SelectChangeEvent<string>

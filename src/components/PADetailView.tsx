@@ -26,7 +26,6 @@ const PADetailView: React.FC = () => {
 
   useEffect(() => {
     if (!paId) return;
-    setLoading(true);
     fetchPADetail(paId)
       .then((res) => {
         setData(res);

@@ -186,23 +186,23 @@ const PriorAuthSubmissionPage = () => {
           {/* Step 1: Patient & Service Details (BeneficiaryInfoSection + SubmissionDetailsSection) */}
           {activeStep === 0 && (
             <Box>
-              {/* Group A: Beneficiary Info */}
-              <BeneficiaryInfoSection
+              {/* Section A: Submission Details (determine request type) */}
+              <SubmissionDetailsSection
                 values={values}
                 errors={errors}
                 onChange={handleChange}
+                onArrayChange={null} // disables array fields in this section
+                hideProcedureFields
               />
-              {/* Group B: Submission Details (no procedure/modifier/unit fields) */}
+              {/* Section B: Beneficiary Info */}
               <Box mt={3}>
-                <SubmissionDetailsSection
+                <BeneficiaryInfoSection
                   values={values}
                   errors={errors}
                   onChange={handleChange}
-                  onArrayChange={null} // disables array fields in this section
-                  hideProcedureFields
                 />
               </Box>
-              {/* Group C: Procedure Codes Array */}
+              {/* Section C: Procedure Codes Array */}
               <Box mt={3}>
                 <ProcedureCodesArraySection
                   procedureCodes={values.procedureCodes}

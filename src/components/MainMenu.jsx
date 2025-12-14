@@ -52,9 +52,9 @@ const MainMenu = () => {
               },
             }}
             onClick={() => navigate('/pa/new')}
-            aria-label="Submit New PA"
+            aria-label="Start PA Request"
           >
-            Submit New PA
+            START PA REQUEST
           </Button>
         </ListItem>
         {menuItems.map((item) => {

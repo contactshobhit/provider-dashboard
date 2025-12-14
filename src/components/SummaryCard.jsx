@@ -5,7 +5,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 
 
-const SummaryCard = ({ title, count, subtitle, loading, error, onRefresh, onClick, cardSx = {}, countColor }) => (
+const SummaryCard = ({ title, count, subtitle, loading, error, onRefresh, onClick, cardSx = {}, countColor, completed }) => (
   <Card
     sx={{
       minHeight: 120,
@@ -16,25 +16,42 @@ const SummaryCard = ({ title, count, subtitle, loading, error, onRefresh, onClic
       cursor: onClick ? 'pointer' : 'default',
       transition: 'box-shadow 0.2s',
       '&:hover': onClick ? { boxShadow: 8 } : {},
+      border: completed ? '2px solid #4fc3f7' : undefined,
+      background: completed ? 'linear-gradient(135deg, #e3f7fa 0%, #f0fdf6 100%)' : undefined,
       ...cardSx,
     }}
     onClick={onClick}
   >
     <CardContent sx={{ p: 2, pb: '16px !important', position: 'relative' }}>
       {/* Title and Refresh Icon (top row) */}
-      <Box display="flex" alignItems="center" justifyContent="space-between" mb={1}>
-        <Typography variant="subtitle1" color="text.secondary" sx={{ fontWeight: 600, fontSize: 16 }}>
+      <Box display="flex" alignItems="center" justifyContent="space-between" mb={1} sx={{ position: 'relative', pr: 5 }}>
+        <Typography variant="subtitle1" color="text.secondary" sx={{ fontWeight: 600, fontSize: 16, pr: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           {title}
         </Typography>
         {onRefresh && (
-          <IconButton
-            aria-label="refresh"
-            onClick={e => { e.stopPropagation(); onRefresh(); }}
-            size="small"
-            sx={{ position: 'absolute', top: 8, right: 8 }}
-          >
-            <RefreshIcon fontSize="small" />
-          </IconButton>
+          <Box sx={{ position: 'absolute', top: 4, right: 4, zIndex: 2 }}>
+            <IconButton
+              aria-label="refresh"
+              onClick={e => { e.stopPropagation(); onRefresh(); }}
+              size="large"
+              sx={{
+                width: 36,
+                height: 36,
+                borderRadius: '50%',
+                background: 'rgba(240,240,240,0.85)',
+                boxShadow: 1,
+                '&:hover': {
+                  background: 'rgba(220,220,220,1)',
+                },
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                p: 0,
+              }}
+            >
+              <RefreshIcon fontSize="medium" />
+            </IconButton>
+          </Box>
         )}
       </Box>
       {/* Main Count */}
@@ -44,7 +61,7 @@ const SummaryCard = ({ title, count, subtitle, loading, error, onRefresh, onClic
         ) : error ? (
           <Typography color="error" variant="body2">{error}</Typography>
         ) : (
-          <Typography sx={{ fontWeight: 700, color: countColor || 'primary.main', fontSize: '2rem', lineHeight: 1 }}>
+          <Typography sx={{ fontWeight: 700, color: countColor || (completed ? '#388e3c' : 'primary.main'), fontSize: '2rem', lineHeight: 1 }}>
             {count}
           </Typography>
         )}

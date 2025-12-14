@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip, CircularProgress, Typography } from '@mui/material';
 
 const statusColor = (status) => {
@@ -14,7 +14,11 @@ const statusColor = (status) => {
 const RecentActivityTable = ({ data, loading, error }) => {
   const navigate = useNavigate();
   const handleRowClick = (row) => {
-    if (row.itemType === 'PA' && row.linkedId) {
+    if (row.type === 'Support Ticket' && row.id) {
+      // Use patientName as category if available, else fallback to type
+      const category = row.patientName || row.type;
+      navigate(`/support/tickets?ticketId=${encodeURIComponent(row.id)}&category=${encodeURIComponent(category)}`);
+    } else if (row.itemType === 'PA' && row.linkedId) {
       navigate(`/pa/search?paId=${encodeURIComponent(row.linkedId)}`);
     } else if (row.itemType === 'ADR' && row.linkedId) {
       navigate(`/adr/management?claimId=${encodeURIComponent(row.linkedId)}`);
@@ -42,11 +46,14 @@ const RecentActivityTable = ({ data, loading, error }) => {
               <TableRow
                 key={row.id}
                 hover
-                sx={{ '& td': { py: 0.5, px: 1, fontSize: 14 }, cursor: (row.itemType === 'PA' || row.itemType === 'ADR') ? 'pointer' : 'default' }}
+                className={row.type === 'Support Ticket' ? 'support-ticket-row' : ''}
+                sx={{ '& td': { py: 0.5, px: 1, fontSize: 14 }, cursor: (row.itemType === 'PA' || row.itemType === 'ADR' || row.type === 'Support Ticket') ? 'pointer' : 'default' }}
                 onClick={() => handleRowClick(row)}
               >
                 <TableCell>{row.id}</TableCell>
-                <TableCell>{row.type}</TableCell>
+                <TableCell>
+                  {row.type === 'Support Ticket' ? (row.topic || row.type) : row.type}
+                </TableCell>
                 <TableCell>{row.patientName}</TableCell>
                 <TableCell>{new Date(row.lastUpdated).toLocaleString()}</TableCell>
                 <TableCell>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import NewTicketForm from './NewTicketForm';
 import HeaderAppBar from './HeaderAppBar';
 import MainMenu from './MainMenu';
@@ -28,6 +29,9 @@ import AddIcon from '@mui/icons-material/Add';
 
 
 const SupportChatPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialFilterType = searchParams.get('filterType') || '';
+  const [ticketTypeFilter, setTicketTypeFilter] = useState(initialFilterType);
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [message, setMessage] = useState('');
@@ -49,14 +53,21 @@ const SupportChatPage = () => {
           })
         );
         setTickets(ticketsWithMessages);
-        setSelectedTicket(ticketsWithMessages.length > 0 ? ticketsWithMessages[0] : null);
+        // If ticketTypeFilter is present, select the first matching ticket
+        if (ticketTypeFilter) {
+          const filtered = ticketsWithMessages.filter(t => (t.type || t.subject || '').toLowerCase().includes(ticketTypeFilter.toLowerCase()));
+          setSelectedTicket(filtered.length > 0 ? filtered[0] : null);
+        } else {
+          setSelectedTicket(ticketsWithMessages.length > 0 ? ticketsWithMessages[0] : null);
+        }
         setLoading(false);
       })
       .catch(() => {
         setError('Could not load tickets');
         setLoading(false);
       });
-  }, []);
+    // eslint-disable-next-line
+  }, [ticketTypeFilter]);
 
   const handleSend = () => {
     if (!message.trim() || !selectedTicket) return;
@@ -143,15 +154,27 @@ const SupportChatPage = () => {
               </TextField>
             </Box>
           </Box>
+          {/* Filter badge/indicator */}
+          {ticketTypeFilter && (
+            <Box sx={{ px: 2, py: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Chip
+                label={`Showing: ${ticketTypeFilter} Tickets`}
+                color="primary"
+                onDelete={() => { setSearchParams({}); setTicketTypeFilter(''); }}
+                sx={{ fontWeight: 600 }}
+              />
+              <Button size="small" onClick={() => { setSearchParams({}); setTicketTypeFilter(''); }}>Clear Filter</Button>
+            </Box>
+          )}
           <List sx={{ flexGrow: 1, overflowY: 'auto', bgcolor: 'background.paper', minHeight: 0 }}>
             {loading ? (
               <ListItem><ListItemText primary="Loading tickets..." /></ListItem>
             ) : error ? (
               <ListItem><ListItemText primary={error} /></ListItem>
-            ) : tickets.length === 0 ? (
+            ) : tickets.filter(ticket => !ticketTypeFilter || (ticket.type || ticket.subject || '').toLowerCase().includes(ticketTypeFilter.toLowerCase())).length === 0 ? (
               <ListItem><ListItemText primary="No tickets found." /></ListItem>
             ) : (
-              tickets.map((ticket) => {
+              tickets.filter(ticket => !ticketTypeFilter || (ticket.type || ticket.subject || '').toLowerCase().includes(ticketTypeFilter.toLowerCase())).map((ticket) => {
                 let chipColor = 'default';
                 if (ticket.status === 'Pending') chipColor = 'info';
                 else if (ticket.status === 'Resolved') chipColor = 'success';

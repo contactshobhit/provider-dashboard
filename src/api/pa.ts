@@ -1,8 +1,10 @@
-import { PARecordsResponse } from '../types';
+import { PARecordsResponse, PADetail } from '../types';
+import { apiGet } from './client';
 
-// API utility for Prior Auth Search Page
 export async function fetchPARecords(): Promise<PARecordsResponse> {
-  const response = await fetch('/api/pa/records');
-  if (!response.ok) throw new Error('Failed to fetch PA records');
-  return response.json();
+  return apiGet<PARecordsResponse>('/api/pa/records');
+}
+
+export async function fetchPADetail(paId: string): Promise<PADetail> {
+  return apiGet<PADetail>(`/api/pa/details/${paId}`);
 }

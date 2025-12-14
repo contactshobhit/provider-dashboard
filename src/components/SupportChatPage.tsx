@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import NewTicketForm from './NewTicketForm';
-import HeaderAppBar from './HeaderAppBar';
-import MainMenu from './MainMenu';
+import PageLayout from './layout/PageLayout';
 import Toolbar from '@mui/material/Toolbar';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -18,18 +17,13 @@ import { fetchSupportTickets } from '../api/support';
 import { createSupportTicket } from '../api/supportTicketsApi';
 import { fetchSupportTicketMessages } from '../api/supportTicketMessagesApi';
 import Snackbar from '@mui/material/Snackbar';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import AddIcon from '@mui/icons-material/Add';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { SupportTicket, SupportMessage, CreateTicketRequest, TicketStatus } from '../types';
-
-const getChipColor = (status: TicketStatus): 'info' | 'success' | 'warning' | 'default' => {
-  if (status === 'Pending') return 'info';
-  if (status === 'Resolved') return 'success';
-  if (status === 'Awaiting Provider Response') return 'warning';
-  return 'default';
-};
+import { getStatusStyles } from '../utils/statusStyles';
+import { formatTimestamp } from '../utils/dateFormat';
 
 const SupportChatPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -122,36 +116,14 @@ const SupportChatPage: React.FC = () => {
   );
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <HeaderAppBar />
-      <MainMenu />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          boxSizing: 'border-box',
-          width: 'calc(100vw - 240px)',
-          minWidth: 0,
-          overflowX: 'auto',
-          bgcolor: 'background.default',
-          pl: '20px',
-          pr: '20px',
-          pt: 4,
-          pb: 0,
-          ml: '240px',
-          marginLeft: 0,
-          height: '100vh',
-          display: 'flex',
-          marginTop: '64px',
-        }}
-      >
-        <Toolbar sx={{ minHeight: 48 }} />
+    <PageLayout sx={{ height: '100vh', display: 'flex', marginTop: '64px' }}>
+      <Toolbar sx={{ minHeight: 48 }} />
         {/* Split Pane */}
         <Box
           sx={{
-            width: 300,
-            minWidth: 300,
-            maxWidth: 300,
+            width: 340,
+            minWidth: 340,
+            maxWidth: 340,
             borderRight: 1,
             borderColor: 'divider',
             bgcolor: 'background.paper',
@@ -163,7 +135,7 @@ const SupportChatPage: React.FC = () => {
         >
           <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ p: 2, pb: 1 }}>
             <Typography variant="h6" sx={{ fontWeight: 700 }}>
-              Support Tickets
+              Support Tickets {!loading && `(${filteredTickets.length})`}
             </Typography>
             <Button
               variant="contained"
@@ -190,31 +162,26 @@ const SupportChatPage: React.FC = () => {
             />
           </Stack>
           <Divider />
-          <Box sx={{ px: 2, py: 1, display: 'flex', gap: 1, width: '100%' }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, width: '100%' }}>
-              <TextField size="small" placeholder="Search..." variant="outlined" fullWidth />
-              <TextField
-                select
-                size="small"
-                label="Status"
-                variant="outlined"
-                fullWidth
-                sx={{ minWidth: 180, maxWidth: '100%' }}
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value || '')}
-                SelectProps={{
-                  displayEmpty: true,
-                  renderValue: (selected) => (selected ? (selected as string) : 'All'),
-                }}
-              >
-                <MenuItem value="">
-                  <em>All</em>
-                </MenuItem>
-                <MenuItem value="Pending">Pending</MenuItem>
-                <MenuItem value="Resolved">Resolved</MenuItem>
-                <MenuItem value="Awaiting Provider Response">Awaiting Provider Response</MenuItem>
-              </TextField>
-            </Box>
+          <Box sx={{ px: 2, pr: 3, py: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <TextField size="small" placeholder="Search..." variant="outlined" fullWidth />
+            <TextField
+              select
+              size="small"
+              variant="outlined"
+              fullWidth
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value || '')}
+              SelectProps={{
+                displayEmpty: true,
+                renderValue: (selected) => (selected ? (selected as string) : 'All Status'),
+              }}
+            >
+              <MenuItem value="">All Status</MenuItem>
+              <MenuItem value="Open">Open</MenuItem>
+              <MenuItem value="Pending">Pending</MenuItem>
+              <MenuItem value="Resolved">Resolved</MenuItem>
+              <MenuItem value="Awaiting Provider Response">Awaiting Provider Response</MenuItem>
+            </TextField>
           </Box>
           {ticketTypeFilter && (
             <Box sx={{ px: 2, py: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -273,12 +240,11 @@ const SupportChatPage: React.FC = () => {
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
                         <Chip
                           label={ticket.status}
-                          color={getChipColor(ticket.status)}
                           size="small"
-                          sx={{ fontWeight: 600, fontSize: 12 }}
+                          sx={{ fontWeight: 600, fontSize: 12, ...getStatusStyles(ticket.status) }}
                         />
                         <Typography variant="caption" sx={{ color: 'text.disabled', ml: 1 }}>
-                          {ticket.lastUpdate}
+                          {formatTimestamp(ticket.lastUpdate)}
                         </Typography>
                       </Box>
                     </Box>
@@ -325,13 +291,23 @@ const SupportChatPage: React.FC = () => {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Chip
                   label={selectedTicket.status}
-                  color={getChipColor(selectedTicket.status)}
                   size="small"
-                  sx={{ fontWeight: 600, fontSize: 13 }}
+                  sx={{ fontWeight: 600, fontSize: 13, ...getStatusStyles(selectedTicket.status) }}
                 />
                 {selectedTicket.status !== 'Resolved' && (
-                  <Button variant="outlined" color="error" size="small">
-                    CLOSE TICKET
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                      color: 'text.secondary',
+                      borderColor: 'divider',
+                      '&:hover': {
+                        borderColor: 'text.secondary',
+                        bgcolor: 'action.hover',
+                      },
+                    }}
+                  >
+                    Close Ticket
                   </Button>
                 )}
               </Box>
@@ -372,23 +348,24 @@ const SupportChatPage: React.FC = () => {
                     sx={{
                       p: 2,
                       mb: 2,
-                      bgcolor: msg.sender === 'Provider' ? 'primary.lighter' : 'grey.100',
+                      bgcolor: msg.sender === 'Provider' ? '#E3F2FD' : '#FFFFFF',
                       color: 'text.primary',
                       maxWidth: '70%',
-                      borderRadius: 2,
-                      boxShadow: 0,
+                      borderRadius: msg.sender === 'Provider' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+                      boxShadow: msg.sender === 'Provider' ? 0 : 1,
+                      border: msg.sender === 'Provider' ? '1px solid #BBDEFB' : '1px solid #E0E0E0',
                     }}
                   >
                     <Typography
                       variant="body2"
-                      sx={{ fontWeight: 600, color: msg.sender === 'Provider' ? 'primary.dark' : 'grey.700' }}
+                      sx={{ fontWeight: 600, color: msg.sender === 'Provider' ? '#1565C0' : '#424242', fontSize: 13 }}
                     >
-                      {msg.sender}
+                      {msg.sender === 'Provider' ? 'You' : 'Support Team'}
                     </Typography>
-                    <Typography variant="body1" sx={{ mt: 0.5 }}>
+                    <Typography variant="body1" sx={{ mt: 0.5, lineHeight: 1.5 }}>
                       {msg.text}
                     </Typography>
-                    <Typography variant="caption" sx={{ mt: 1, color: 'text.disabled' }}>
+                    <Typography variant="caption" sx={{ mt: 1, display: 'block', color: 'text.disabled', fontSize: 11 }}>
                       {msg.time}
                     </Typography>
                   </Paper>
@@ -444,8 +421,7 @@ const SupportChatPage: React.FC = () => {
             </Button>
           </Box>
         </Box>
-      </Box>
-    </Box>
+    </PageLayout>
   );
 };
 

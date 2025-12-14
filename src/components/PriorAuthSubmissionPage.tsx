@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react';
-import HeaderAppBar from './HeaderAppBar';
-import MainMenu from './MainMenu';
+import PageLayout from './layout/PageLayout';
 import Toolbar from '@mui/material/Toolbar';
 import Box from '@mui/material/Box';
 import {
@@ -190,27 +189,8 @@ const PriorAuthSubmissionPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <HeaderAppBar />
-      <MainMenu />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          boxSizing: 'border-box',
-          width: 'calc(100vw - 240px)',
-          minWidth: 0,
-          overflowX: 'auto',
-          bgcolor: 'background.default',
-          pl: '20px',
-          pr: '20px',
-          pt: 4,
-          pb: 0,
-          ml: '240px',
-          marginLeft: 0,
-        }}
-      >
-        <Toolbar sx={{ minHeight: 48 }} />
+    <PageLayout>
+      <Toolbar sx={{ minHeight: 48 }} />
         <Typography variant="h4" sx={{ fontWeight: 700, mb: 3 }}>
           New Prior Authorization Request
         </Typography>
@@ -342,8 +322,7 @@ const PriorAuthSubmissionPage: React.FC = () => {
             {snackbarMsg}
           </Alert>
         </Snackbar>
-      </Box>
-    </Box>
+    </PageLayout>
   );
 };
 

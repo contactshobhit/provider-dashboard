@@ -5,19 +5,9 @@ import Grid from '@mui/material/Grid';
 import HeaderAppBar from './HeaderAppBar';
 import Button from '@mui/material/Button';
 import MainMenu from './MainMenu';
-import { PADetail, PAStatus } from '../types';
-
-const fetchPADetail = async (paId: string): Promise<PADetail> => {
-  const response = await fetch(`/api/pa/details/${paId}`);
-  if (!response.ok) throw new Error('Failed to fetch PA details');
-  return response.json();
-};
-
-const getStatusColor = (status: PAStatus): 'success' | 'error' | 'warning' => {
-  if (status === 'Approved') return 'success';
-  if (status === 'Denied') return 'error';
-  return 'warning';
-};
+import { PADetail } from '../types';
+import { fetchPADetail } from '../api/pa';
+import { getStatusChipColor } from '../utils/statusStyles';
 
 const PADetailView: React.FC = () => {
   const { paId } = useParams<{ paId: string }>();
@@ -118,7 +108,7 @@ const PADetailView: React.FC = () => {
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <strong>Final Status:</strong>{' '}
-                <Chip label={data.currentStatus} color={getStatusColor(data.currentStatus)} />
+                <Chip label={data.currentStatus} color={getStatusChipColor(data.currentStatus)} />
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <strong>Date of Service:</strong> {data.serviceDetails?.dateOfService || '-'}

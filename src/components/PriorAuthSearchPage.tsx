@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import HeaderAppBar from './HeaderAppBar';
-import MainMenu from './MainMenu';
+import PageLayout from './layout/PageLayout';
 import Toolbar from '@mui/material/Toolbar';
 import Box from '@mui/material/Box';
 import { Typography, TextField, MenuItem, Button, Modal, Chip, Menu, MenuItem as MuiMenuItem, IconButton } from '@mui/material';
@@ -12,6 +11,7 @@ import { fetchPARecords } from '../api/pa';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { PARecord } from '../types';
+import { getStatusChipColor } from '../utils/statusStyles';
 
 const statusOptions = [
   { value: '', label: 'All' },
@@ -32,12 +32,6 @@ const modalStyle = {
   p: 4,
 };
 
-const getStatusChipColor = (status: string): 'success' | 'error' | 'warning' | 'default' => {
-  if (status === 'Approved') return 'success';
-  if (status === 'Denied') return 'error';
-  if (status === 'Pending' || status === 'Draft') return 'warning';
-  return 'default';
-};
 
 const PriorAuthSearchPage: React.FC = () => {
   const navigate = useNavigate();
@@ -272,27 +266,8 @@ const PriorAuthSearchPage: React.FC = () => {
   ];
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <HeaderAppBar />
-      <MainMenu />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          boxSizing: 'border-box',
-          width: 'calc(100vw - 240px)',
-          minWidth: 0,
-          overflowX: 'auto',
-          bgcolor: 'background.default',
-          pl: '20px',
-          pr: '20px',
-          pt: 4,
-          pb: 0,
-          ml: '240px',
-          marginLeft: 0,
-        }}
-      >
-        <Toolbar sx={{ minHeight: 48 }} />
+    <PageLayout>
+      <Toolbar sx={{ minHeight: 48 }} />
         <Typography variant="h5" gutterBottom>
           PA Request Search & Status
         </Typography>
@@ -418,8 +393,7 @@ const PriorAuthSearchPage: React.FC = () => {
             })()}
           </Box>
         </Modal>
-      </Box>
-    </Box>
+    </PageLayout>
   );
 };
 

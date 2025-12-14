@@ -33,7 +33,7 @@ const WelcomeBanner: React.FC = () => {
   });
 
   return (
-    <Paper elevation={2} sx={{ p: 4, mb: 3, bgcolor: '#E3F2FD', borderRadius: 2 }}>
+    <Paper elevation={2} sx={{ p: 2.5, mb: 2, bgcolor: '#E3F2FD', borderRadius: 2 }}>
       {loading ? (
         <CircularProgress size={28} />
       ) : error ? (
@@ -41,12 +41,12 @@ const WelcomeBanner: React.FC = () => {
       ) : profile ? (
         <>
           <Typography variant="h5" sx={{ fontWeight: 700, color: 'primary.main' }}>
-            Welcome back, {profile.title} {profile.lastName}!
+            Welcome back, {profile.title ? `${profile.title} ` : ''}{profile.firstName || profile.lastName}!
           </Typography>
           <Typography variant="body1" sx={{ mt: 1, color: 'text.secondary' }}>
-            Here is your summary of active Prior Authorization requests and support activities.
+            Here's what needs your attention today.
           </Typography>
-          <Typography variant="body2" sx={{ mt: 1.5, color: 'text.disabled' }}>
+          <Typography variant="body2" sx={{ mt: 1, color: 'text.disabled' }}>
             {dateString} &nbsp;|&nbsp; {timeString}
           </Typography>
         </>

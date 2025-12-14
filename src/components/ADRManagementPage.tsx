@@ -1,18 +1,12 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import Snackbar from '@mui/material/Snackbar';
-import HeaderAppBar from './HeaderAppBar';
-import MainMenu from './MainMenu';
+import PageLayout from './layout/PageLayout';
 import { Box, Toolbar, Typography, Chip, Button, TextField } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { fetchADRRecords } from '../api/adr';
 import { ADRRecord, ADRStatus } from '../types';
-
-const statusColors: Record<ADRStatus, 'warning' | 'info' | 'primary'> = {
-  Requested: 'warning',
-  Submitted: 'info',
-  'Under Review': 'primary',
-};
+import { getStatusChipColor } from '../utils/statusStyles';
 
 interface LocationState {
   adrSubmitted?: boolean;
@@ -132,7 +126,7 @@ const ADRManagementPage: React.FC = () => {
       renderCell: (params: GridRenderCellParams) => (
         <Chip
           label={params.value as string}
-          color={statusColors[params.value as ADRStatus] || 'default'}
+          color={getStatusChipColor(params.value as string)}
           sx={{ fontWeight: 600 }}
         />
       ),
@@ -165,27 +159,8 @@ const ADRManagementPage: React.FC = () => {
   });
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <HeaderAppBar />
-      <MainMenu />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          boxSizing: 'border-box',
-          width: 'calc(100vw - 240px)',
-          minWidth: 0,
-          overflowX: 'auto',
-          bgcolor: 'background.default',
-          pl: '20px',
-          pr: '20px',
-          pt: 4,
-          pb: 0,
-          ml: '240px',
-          marginLeft: 0,
-        }}
-      >
-        <Toolbar sx={{ minHeight: 48 }} />
+    <PageLayout>
+      <Toolbar sx={{ minHeight: 48 }} />
         <Typography variant="h5" gutterBottom>
           ADR Management Dashboard
         </Typography>
@@ -238,8 +213,7 @@ const ADRManagementPage: React.FC = () => {
             transition: background-color 0.5s;
           }
         `}</style>
-      </Box>
-    </Box>
+    </PageLayout>
   );
 };
 

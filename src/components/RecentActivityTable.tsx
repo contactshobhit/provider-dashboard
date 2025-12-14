@@ -12,6 +12,7 @@ import {
   CircularProgress,
   Typography,
 } from '@mui/material';
+import { getStatusStyles } from '../utils/statusStyles';
 
 interface ActivityRow {
   id: string;
@@ -29,15 +30,6 @@ interface RecentActivityTableProps {
   loading: boolean;
   error: string | null;
 }
-
-const getStatusColor = (
-  status: string
-): 'success' | 'error' | 'warning' | 'default' => {
-  if (status === 'Approved') return 'success';
-  if (status === 'Denied') return 'error';
-  if (status === 'Pending' || status === 'Awaiting Provider Response') return 'warning';
-  return 'default';
-};
 
 const RecentActivityTable: React.FC<RecentActivityTableProps> = ({ data, loading, error }) => {
   const navigate = useNavigate();
@@ -96,10 +88,12 @@ const RecentActivityTable: React.FC<RecentActivityTableProps> = ({ data, loading
                   <TableCell>
                     <Chip
                       label={row.currentStatus}
-                      color={getStatusColor(row.currentStatus)}
                       variant="filled"
                       size="small"
-                      sx={{ fontWeight: 600 }}
+                      sx={{
+                        fontWeight: 600,
+                        ...getStatusStyles(row.currentStatus),
+                      }}
                     />
                   </TableCell>
                 </TableRow>

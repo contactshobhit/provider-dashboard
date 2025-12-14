@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import HeaderAppBar from './HeaderAppBar';
-import MainMenu from './MainMenu';
+import PageLayout from './layout/PageLayout';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -10,7 +9,6 @@ import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -39,6 +37,8 @@ interface FormState {
   time1: string;
   date2: string;
   time2: string;
+  date3: string;
+  time3: string;
   reason: string;
 }
 
@@ -80,6 +80,8 @@ const PeerToPeerRequestPage: React.FC = () => {
     time1: '',
     date2: '',
     time2: '',
+    date3: '',
+    time3: '',
     reason: '',
   });
   const [errors, setErrors] = useState<FormErrors>({});
@@ -122,187 +124,236 @@ const PeerToPeerRequestPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <HeaderAppBar />
-      <MainMenu />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          width: 'calc(100vw - 240px)',
-          minWidth: 0,
-          bgcolor: 'background.default',
-          pl: '20px',
-          pr: '20px',
-          pt: 4,
-          pb: 0,
-          ml: '240px',
-          marginLeft: 0,
-          marginTop: '64px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'flex-start',
-        }}
-      >
-        <Toolbar sx={{ minHeight: 24, p: 0 }} />
-        <Paper elevation={2} sx={{ p: 4, mt: 4, minWidth: 400, maxWidth: 500, width: '100%' }}>
+    <PageLayout sx={{ marginTop: '64px', display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
+      <Toolbar sx={{ minHeight: 24, p: 0 }} />
+        <Paper elevation={2} sx={{ p: 4, mt: 4, minWidth: 400, maxWidth: 800, width: '100%' }}>
           <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
             Schedule Peer-to-Peer Call
           </Typography>
           <form onSubmit={handleSubmit} autoComplete="off">
-            <FormControl fullWidth margin="normal" required error={!!errors.paId}>
-              <InputLabel id="pa-id-label">Associated PA ID</InputLabel>
-              <Select
-                labelId="pa-id-label"
-                id="pa-id"
-                name="paId"
-                value={form.paId}
-                label="Associated PA ID"
-                onChange={handleChange}
-              >
-                {MOCK_PA_LIST.filter((pa) => pa.status === 'Denied' || pa.status === 'Partial Denial').map(
-                  (pa) => (
-                    <MenuItem key={pa.id} value={pa.id}>
-                      {pa.id} ({pa.status})
-                    </MenuItem>
-                  )
-                )}
-              </Select>
-              {errors.paId && (
-                <Typography color="error" variant="caption">
-                  {errors.paId}
-                </Typography>
-              )}
-            </FormControl>
-            <TextField
-              fullWidth
-              label="Physician Name"
-              name="providerName"
-              margin="normal"
-              value={form.providerName}
-              InputProps={{ readOnly: true }}
-            />
-            <TextField
-              fullWidth
-              label="Contact Phone"
-              name="phone"
-              margin="normal"
-              value={form.phone}
-              onChange={handleChange}
-              required
-              error={!!errors.phone}
-              helperText={errors.phone}
-            />
-            <TextField
-              fullWidth
-              label="Contact Email"
-              name="email"
-              margin="normal"
-              value={form.email}
-              onChange={handleChange}
-              required
-              error={!!errors.email}
-              helperText={errors.email}
-            />
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <div style={{ display: 'flex', flexDirection: 'row', gap: 16, marginBottom: 20, width: '100%' }}>
-                  <div style={{ width: '50%' }}>
-                    <label style={{ display: 'block', fontWeight: 600, marginBottom: 4 }}>Preferred Date 1</label>
-                    <TextField
-                      name="date1"
-                      type="date"
-                      margin="normal"
-                      InputLabelProps={{ shrink: true }}
-                      value={form.date1}
-                      onChange={handleChange}
-                      required
-                      error={!!errors.date1}
-                      helperText={errors.date1}
-                      fullWidth
-                    />
-                  </div>
-                  <div style={{ width: '50%' }}>
-                    <label style={{ display: 'block', fontWeight: 600, marginBottom: 4 }}>Time Slot 1</label>
-                    <FormControl fullWidth margin="normal" required error={!!errors.time1}>
-                      <Select
-                        labelId="time1-label"
-                        id="time1"
-                        name="time1"
-                        value={form.time1}
-                        displayEmpty
-                        onChange={handleChange}
-                        sx={{ background: '#fff', borderRadius: 1 }}
-                      >
-                        <MenuItem value="" disabled>
-                          Select time
+            {/* Row 1: PA ID and Physician Name */}
+            <Box sx={{ display: 'flex', gap: 2, mb: 1 }}>
+              <Box sx={{ flex: 1 }}>
+                <FormControl fullWidth margin="normal" required error={!!errors.paId}>
+                  <InputLabel id="pa-id-label">Associated PA ID</InputLabel>
+                  <Select
+                    labelId="pa-id-label"
+                    id="pa-id"
+                    name="paId"
+                    value={form.paId}
+                    label="Associated PA ID"
+                    onChange={handleChange}
+                  >
+                    {MOCK_PA_LIST.filter((pa) => pa.status === 'Denied' || pa.status === 'Partial Denial').map(
+                      (pa) => (
+                        <MenuItem key={pa.id} value={pa.id}>
+                          {pa.id} ({pa.status})
                         </MenuItem>
-                        {TIME_SLOTS.map((slot) => (
-                          <MenuItem key={slot} value={slot}>
-                            {slot}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      {errors.time1 && (
-                        <Typography color="error" variant="caption">
-                          {errors.time1}
-                        </Typography>
-                      )}
-                    </FormControl>
-                  </div>
-                </div>
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <div
-                  style={{
-                    marginBottom: 20,
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'row',
-                    gap: 16,
-                    alignItems: 'flex-end',
+                      )
+                    )}
+                  </Select>
+                  <Typography variant="caption" sx={{ color: errors.paId ? 'error.main' : 'text.secondary', mt: 0.5 }}>
+                    {errors.paId || 'Only denied or partially denied PAs are eligible'}
+                  </Typography>
+                </FormControl>
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <TextField
+                  fullWidth
+                  label="Physician Name"
+                  name="providerName"
+                  margin="normal"
+                  value={form.providerName}
+                  InputProps={{ readOnly: true }}
+                  sx={{
+                    '& .MuiInputBase-input': {
+                      bgcolor: '#f5f5f5',
+                      color: 'text.secondary',
+                    },
                   }}
-                >
-                  <div style={{ width: '50%', display: 'flex', flexDirection: 'column' }}>
-                    <label style={{ display: 'block', fontWeight: 600, marginBottom: 4 }}>
-                      Preferred Date 2 (optional)
-                    </label>
-                    <TextField
-                      name="date2"
-                      type="date"
-                      margin="normal"
-                      InputLabelProps={{ shrink: true }}
-                      value={form.date2}
+                  helperText="Auto-filled from your profile"
+                />
+              </Box>
+            </Box>
+
+            {/* Row 2: Contact Phone and Email */}
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <Box sx={{ flex: 1 }}>
+                <TextField
+                  fullWidth
+                  label="Contact Phone"
+                  name="phone"
+                  margin="normal"
+                  value={form.phone}
+                  onChange={handleChange}
+                  required
+                  error={!!errors.phone}
+                  helperText={errors.phone}
+                />
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <TextField
+                  fullWidth
+                  label="Contact Email"
+                  name="email"
+                  margin="normal"
+                  value={form.email}
+                  onChange={handleChange}
+                  required
+                  error={!!errors.email}
+                  helperText={errors.email}
+                />
+              </Box>
+            </Box>
+
+            {/* Scheduling Preferences Section */}
+            <Box
+              sx={{
+                bgcolor: '#f8f9fa',
+                borderRadius: 2,
+                p: 2,
+                mt: 2,
+                mb: 1,
+                border: '1px solid #e0e0e0',
+              }}
+            >
+              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2, color: 'text.primary' }}>
+                Scheduling Preferences
+              </Typography>
+
+              {/* Date/Time Row 1 - Required */}
+              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                <Box sx={{ flex: 1 }}>
+                  <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
+                    Preferred Date 1 *
+                  </Typography>
+                  <TextField
+                    name="date1"
+                    type="date"
+                    size="small"
+                    InputLabelProps={{ shrink: true }}
+                    value={form.date1}
+                    onChange={handleChange}
+                    required
+                    error={!!errors.date1}
+                    helperText={errors.date1}
+                    fullWidth
+                    sx={{ bgcolor: '#fff' }}
+                  />
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                  <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
+                    Time Slot 1 *
+                  </Typography>
+                  <FormControl fullWidth size="small" required error={!!errors.time1}>
+                    <Select
+                      id="time1"
+                      name="time1"
+                      value={form.time1}
+                      displayEmpty
                       onChange={handleChange}
-                      fullWidth
-                    />
-                  </div>
-                  <div style={{ width: '50%', display: 'flex', flexDirection: 'column' }}>
-                    <label style={{ display: 'block', fontWeight: 600, marginBottom: 4 }}>
-                      Time Slot 2 (optional)
-                    </label>
-                    <FormControl fullWidth margin="normal">
-                      <Select
-                        labelId="time2-label"
-                        id="time2"
-                        name="time2"
-                        value={form.time2}
-                        displayEmpty
-                        onChange={handleChange}
-                        sx={{ background: '#fff', borderRadius: 1 }}
-                      >
-                        <MenuItem value="">None</MenuItem>
-                        {TIME_SLOTS.map((slot) => (
-                          <MenuItem key={slot} value={slot}>
-                            {slot}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </div>
-                </div>
-              </Grid>
-            </Grid>
+                      sx={{ bgcolor: '#fff' }}
+                    >
+                      <MenuItem value="" disabled>
+                        Select time
+                      </MenuItem>
+                      {TIME_SLOTS.map((slot) => (
+                        <MenuItem key={slot} value={slot}>
+                          {slot}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {errors.time1 && (
+                      <Typography color="error" variant="caption">
+                        {errors.time1}
+                      </Typography>
+                    )}
+                  </FormControl>
+                </Box>
+              </Box>
+
+              {/* Date/Time Row 2 - Optional */}
+              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                <Box sx={{ flex: 1 }}>
+                  <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5, color: 'text.secondary' }}>
+                    Preferred Date 2 (optional)
+                  </Typography>
+                  <TextField
+                    name="date2"
+                    type="date"
+                    size="small"
+                    InputLabelProps={{ shrink: true }}
+                    value={form.date2}
+                    onChange={handleChange}
+                    fullWidth
+                    sx={{ bgcolor: '#fff' }}
+                  />
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                  <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5, color: 'text.secondary' }}>
+                    Time Slot 2 (optional)
+                  </Typography>
+                  <FormControl fullWidth size="small">
+                    <Select
+                      id="time2"
+                      name="time2"
+                      value={form.time2}
+                      displayEmpty
+                      onChange={handleChange}
+                      sx={{ bgcolor: '#fff' }}
+                    >
+                      <MenuItem value="">None</MenuItem>
+                      {TIME_SLOTS.map((slot) => (
+                        <MenuItem key={slot} value={slot}>
+                          {slot}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Box>
+              </Box>
+
+              {/* Date/Time Row 3 - Optional */}
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <Box sx={{ flex: 1 }}>
+                  <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5, color: 'text.secondary' }}>
+                    Preferred Date 3 (optional)
+                  </Typography>
+                  <TextField
+                    name="date3"
+                    type="date"
+                    size="small"
+                    InputLabelProps={{ shrink: true }}
+                    value={form.date3}
+                    onChange={handleChange}
+                    fullWidth
+                    sx={{ bgcolor: '#fff' }}
+                  />
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                  <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5, color: 'text.secondary' }}>
+                    Time Slot 3 (optional)
+                  </Typography>
+                  <FormControl fullWidth size="small">
+                    <Select
+                      id="time3"
+                      name="time3"
+                      value={form.time3}
+                      displayEmpty
+                      onChange={handleChange}
+                      sx={{ bgcolor: '#fff' }}
+                    >
+                      <MenuItem value="">None</MenuItem>
+                      {TIME_SLOTS.map((slot) => (
+                        <MenuItem key={slot} value={slot}>
+                          {slot}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Box>
+              </Box>
+            </Box>
             <TextField
               fullWidth
               label="Reason for Request"
@@ -356,8 +407,7 @@ const PeerToPeerRequestPage: React.FC = () => {
             </Dialog>
           </form>
         </Paper>
-      </Box>
-    </Box>
+    </PageLayout>
   );
 };
 

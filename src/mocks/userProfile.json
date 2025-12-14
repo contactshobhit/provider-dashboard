@@ -1,8 +1,10 @@
 {
   "status": "success",
   "data": {
-    "title": "Dr.",
+    "firstName": "Jane",
     "lastName": "Smith",
+    "role": "Office Staff",
+    "organization": "Dr. John's Practice",
     "affiliation": "Sunrise Medical Group"
   }
 }

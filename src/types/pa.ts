@@ -1,13 +1,63 @@
 // Prior Authorization Types
 
+/**
+ * PA Status Definitions and Workflow
+ *
+ * Status Descriptions:
+ * - Draft: PA request started but not yet submitted
+ * - Submitted: PA submitted, awaiting processing
+ * - Under Review: PA being reviewed by medical staff
+ * - Affirmed: PA approved - service is authorized (determination letter issued)
+ * - Non-Affirmed: PA denied - service not authorized (determination letter issued)
+ * - Partial Affirmation: PA partially approved - some services authorized (determination letter issued)
+ * - Dismissed: PA dismissed for administrative reasons (beneficiary not eligible, invalid NPI, etc.)
+ *
+ * Valid Status Transitions:
+ * - Draft → Submitted (on submission)
+ * - Submitted → Under Review (on processing start)
+ * - Under Review → Affirmed | Non-Affirmed | Partial Affirmation | Dismissed (on determination)
+ * - Non-Affirmed → Affirmed (after successful P2P call and MD review)
+ * - Partial Affirmation → Affirmed (after successful P2P call and MD review)
+ *
+ * Notes:
+ * - UTN is assigned only at determination time
+ * - Determination letter is issued for Affirmed, Non-Affirmed, and Partial Affirmation
+ * - P2P calls and Resubmissions are activities, not statuses
+ * - Resubmissions create new PA requests linked via parentPaId
+ */
 export type PAStatus =
+  | 'Draft'
+  | 'Submitted'
+  | 'Under Review'
   | 'Affirmed'
   | 'Non-Affirmed'
-  | 'Pending'
-  | 'Draft'
-  | 'Expired'
-  | 'Resolved'
-  | 'Partial Affirmation';
+  | 'Partial Affirmation'
+  | 'Dismissed';
+
+/**
+ * P2P (Peer-to-Peer) Call Activity
+ *
+ * P2P calls are activities that can happen on Non-Affirmed or Partial Affirmation cases.
+ * Multiple P2P calls can be requested on a single PA.
+ *
+ * Status Flow: Requested → Scheduled → Completed
+ * Outcomes: Affirmed (overturns decision) | Upheld (maintains decision)
+ */
+export type P2PStatus = 'Requested' | 'Scheduled' | 'Completed';
+export type P2POutcome = 'Affirmed' | 'Upheld';
+
+export interface P2PCall {
+  id: string;
+  status: P2PStatus;
+  requestedDate: string;
+  scheduledDate?: string;
+  scheduledTime?: string;
+  contactNumber?: string;
+  medicalDirectorName?: string;
+  completedDate?: string;
+  outcome?: P2POutcome;
+  notes?: string;
+}
 
 export type SubmissionType = 'initial' | 'resubmission' | '';
 
@@ -68,10 +118,11 @@ export interface PARecord {
   requestDate: string;
   serviceType: string;
   status: PAStatus;
-  determinationDate: string;
+  determinationDate?: string;
   submittedRecords: number;
-  peerToPeerRequested?: boolean;
-  utn: string;
+  utn?: string; // UTN assigned only at determination
+  parentPaId?: string; // If this is a resubmission, link to parent PA
+  p2pCalls?: P2PCall[]; // P2P activity on this PA
 }
 
 // PA Detail View
@@ -108,7 +159,7 @@ export interface PAHistoryEvent {
 
 export interface PADetail {
   paId: string;
-  utn: string;
+  utn?: string; // UTN assigned only at determination
   currentStatus: PAStatus;
   serviceDetails: PAServiceDetails;
   requestingProvider: string;
@@ -117,7 +168,8 @@ export interface PADetail {
   submittedFiles: PASubmittedFile[];
   paHistory: PAHistoryEvent[];
   missingDocuments?: boolean;
-  p2pExpired?: boolean;
+  parentPaId?: string; // If this is a resubmission, link to parent PA
+  p2pCalls?: P2PCall[]; // P2P activity on this PA
 }
 
 // PA List for dropdowns

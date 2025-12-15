@@ -1,16 +1,119 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Box, Typography, Paper, Divider, Chip, Link, CircularProgress } from '@mui/material';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Box, Typography, Paper, Divider, Chip, Link, CircularProgress, Card, CardContent } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import HeaderAppBar from './HeaderAppBar';
 import Button from '@mui/material/Button';
 import MainMenu from './MainMenu';
-import { PADetail } from '../types';
+import { PADetail, P2PCall } from '../types';
 import { fetchPADetail } from '../api/pa';
-import { getStatusChipColor } from '../utils/statusStyles';
+import { getStatusChipColor, getStatusStyles } from '../utils/statusStyles';
+import PhoneIcon from '@mui/icons-material/Phone';
+import EventIcon from '@mui/icons-material/Event';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
+import { formatDateUS } from '../utils/dateFormat';
+
+// P2P Activity Card Component
+const P2PActivityCard: React.FC<{ p2pCall: P2PCall; index: number }> = ({ p2pCall, index }) => {
+  const statusStyles = getStatusStyles(p2pCall.status);
+
+  const getStatusIcon = () => {
+    switch (p2pCall.status) {
+      case 'Requested':
+        return <HourglassEmptyIcon sx={{ fontSize: 20 }} />;
+      case 'Scheduled':
+        return <EventIcon sx={{ fontSize: 20 }} />;
+      case 'Completed':
+        return <CheckCircleIcon sx={{ fontSize: 20 }} />;
+      default:
+        return <PhoneIcon sx={{ fontSize: 20 }} />;
+    }
+  };
+
+  return (
+    <Card sx={{ mb: 2, border: '1px solid', borderColor: 'divider' }}>
+      <CardContent>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+            P2P Call #{index + 1}
+          </Typography>
+          <Chip
+            icon={getStatusIcon()}
+            label={p2pCall.status}
+            size="small"
+            sx={{
+              bgcolor: statusStyles.bgcolor,
+              color: statusStyles.color,
+              fontWeight: 600,
+              '& .MuiChip-icon': { color: statusStyles.color },
+            }}
+          />
+        </Box>
+
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Typography variant="body2" color="text.secondary">Requested Date</Typography>
+            <Typography variant="body1">{formatDateUS(p2pCall.requestedDate)}</Typography>
+          </Grid>
+
+          {p2pCall.scheduledDate && (
+            <>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Typography variant="body2" color="text.secondary">Scheduled Date & Time</Typography>
+                <Typography variant="body1">
+                  {formatDateUS(p2pCall.scheduledDate)} at {p2pCall.scheduledTime}
+                </Typography>
+              </Grid>
+              {p2pCall.contactNumber && (
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <Typography variant="body2" color="text.secondary">Contact Number</Typography>
+                  <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <PhoneIcon sx={{ fontSize: 16 }} /> {p2pCall.contactNumber}
+                  </Typography>
+                </Grid>
+              )}
+              {p2pCall.medicalDirectorName && (
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <Typography variant="body2" color="text.secondary">Medical Director</Typography>
+                  <Typography variant="body1">{p2pCall.medicalDirectorName}</Typography>
+                </Grid>
+              )}
+            </>
+          )}
+
+          {p2pCall.status === 'Completed' && (
+            <>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Typography variant="body2" color="text.secondary">Completed Date</Typography>
+                <Typography variant="body1">{formatDateUS(p2pCall.completedDate || '')}</Typography>
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Typography variant="body2" color="text.secondary">Outcome</Typography>
+                <Chip
+                  label={p2pCall.outcome}
+                  size="small"
+                  color={p2pCall.outcome === 'Affirmed' ? 'success' : 'error'}
+                  sx={{ fontWeight: 600 }}
+                />
+              </Grid>
+              {p2pCall.notes && (
+                <Grid size={12}>
+                  <Typography variant="body2" color="text.secondary">Notes</Typography>
+                  <Typography variant="body1">{p2pCall.notes}</Typography>
+                </Grid>
+              )}
+            </>
+          )}
+        </Grid>
+      </CardContent>
+    </Card>
+  );
+};
 
 const PADetailView: React.FC = () => {
   const { paId } = useParams<{ paId: string }>();
+  const navigate = useNavigate();
   const [data, setData] = useState<PADetail | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -71,28 +174,45 @@ const PADetailView: React.FC = () => {
           </Button>
 
           {/* Conditional Action Buttons */}
-          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-            {(data.currentStatus === 'Non-Affirmed' || data.currentStatus === 'Partial Affirmation') && (
-              <Button variant="contained" color="primary" href="/pa/p2p">
-                Request Peer-to-Peer
-              </Button>
-            )}
-            {data.currentStatus === 'Pending' && data.missingDocuments && (
-              <Button variant="contained" color="info" href={`/pa/resubmit/${data.paId}`}>
-                Upload More Documents
-              </Button>
-            )}
-            {data.currentStatus === 'Non-Affirmed' && data.p2pExpired && (
-              <Button variant="contained" color="secondary" href="/pa/submit">
-                Submit Resubmission
-              </Button>
-            )}
-            {data.currentStatus === 'Draft' && (
-              <Button variant="contained" color="primary" href={`/pa/new?draftId=${data.paId}`}>
-                Continue Draft
-              </Button>
-            )}
-          </Box>
+          {(() => {
+            const canRequestP2P = (data.currentStatus === 'Non-Affirmed' || data.currentStatus === 'Partial Affirmation');
+            const hasActiveP2P = data.p2pCalls?.some(p => p.status === 'Requested' || p.status === 'Scheduled');
+            const hasCompletedP2P = data.p2pCalls?.some(p => p.status === 'Completed');
+
+            return (
+              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                {canRequestP2P && !hasActiveP2P && (
+                  <Button variant="contained" color="primary" onClick={() => navigate(`/pa/p2p/${data.paId}`)}>
+                    {hasCompletedP2P ? 'Request Another P2P' : 'Request Peer-to-Peer'}
+                  </Button>
+                )}
+                {(data.currentStatus === 'Under Review' || data.currentStatus === 'Submitted') && data.missingDocuments && (
+                  <Button variant="contained" color="info" onClick={() => navigate(`/pa/upload/${data.paId}`)}>
+                    Upload More Documents
+                  </Button>
+                )}
+                {(data.currentStatus === 'Non-Affirmed' || data.currentStatus === 'Partial Affirmation') && (
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => {
+                      const params = new URLSearchParams();
+                      params.set('paId', data.paId);
+                      if (data.utn) params.set('utn', data.utn);
+                      navigate(`/pa/new?${params.toString()}`);
+                    }}
+                  >
+                    Submit Resubmission
+                  </Button>
+                )}
+                {data.currentStatus === 'Draft' && (
+                  <Button variant="contained" color="primary" onClick={() => navigate(`/pa/new?draftId=${data.paId}`)}>
+                    Continue Draft
+                  </Button>
+                )}
+              </Box>
+            );
+          })()}
 
           <Paper sx={{ p: 4 }}>
             {/* PA Overview */}
@@ -171,6 +291,51 @@ const PADetailView: React.FC = () => {
               </Grid>
             </Grid>
             <Divider sx={{ my: 2 }} />
+
+            {/* P2P Activity Section */}
+            {(data.currentStatus === 'Non-Affirmed' || data.currentStatus === 'Partial Affirmation' || data.currentStatus === 'Affirmed') &&
+              (data.p2pCalls && data.p2pCalls.length > 0 ? (
+                <>
+                  <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <PhoneIcon /> P2P Activity
+                  </Typography>
+                  {data.p2pCalls.map((p2pCall, idx) => (
+                    <P2PActivityCard key={p2pCall.id} p2pCall={p2pCall} index={idx} />
+                  ))}
+                  <Divider sx={{ my: 2 }} />
+                </>
+              ) : (data.currentStatus === 'Non-Affirmed' || data.currentStatus === 'Partial Affirmation') && (
+                <>
+                  <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <PhoneIcon /> P2P Activity
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    No P2P calls have been requested for this PA. You can request a Peer-to-Peer review using the button above.
+                  </Typography>
+                  <Divider sx={{ my: 2 }} />
+                </>
+              ))
+            }
+
+            {/* Resubmission Link */}
+            {data.parentPaId && (
+              <>
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                  Resubmission Information
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 2 }}>
+                  This PA is a resubmission of{' '}
+                  <Link
+                    component="button"
+                    onClick={() => navigate(`/pa/details/${data.parentPaId}`)}
+                    sx={{ fontWeight: 600, cursor: 'pointer' }}
+                  >
+                    {data.parentPaId}
+                  </Link>
+                </Typography>
+                <Divider sx={{ my: 2 }} />
+              </>
+            )}
 
             {/* Documentation / Audit Section */}
             <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>

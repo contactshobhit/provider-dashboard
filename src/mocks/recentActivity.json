@@ -2,15 +2,88 @@
   "status": "success",
   "data": [
     {
+      "id": "P2P-001",
+      "type": "P2P Call Activity",
+      "itemType": "P2P",
+      "linkedId": "PA-001235",
+      "statusChanged": "Scheduled",
+      "patientId": "P-45891",
+      "patientName": "Sarah K.",
+      "lastUpdated": "2025-12-13T14:00:00Z",
+      "currentStatus": "Scheduled",
+      "p2pDetails": {
+        "scheduledDate": "2025-12-18",
+        "scheduledTime": "10:00 AM",
+        "medicalDirectorName": "Dr. James Wilson"
+      }
+    },
+    {
+      "id": "P2P-002",
+      "type": "P2P Call Activity",
+      "itemType": "P2P",
+      "linkedId": "PA-001238",
+      "statusChanged": "Scheduled",
+      "patientId": "P-45894",
+      "patientName": "Chris P.",
+      "lastUpdated": "2025-12-13T11:30:00Z",
+      "currentStatus": "Scheduled",
+      "p2pDetails": {
+        "scheduledDate": "2025-12-20",
+        "scheduledTime": "2:30 PM",
+        "medicalDirectorName": "Dr. Sarah Chen"
+      }
+    },
+    {
+      "id": "CLM-100124",
+      "type": "Additional Documentation Request",
+      "patientName": "N/A",
+      "lastUpdated": "2025-12-13T12:00:00Z",
+      "currentStatus": "Submitted",
+      "itemType": "ADR",
+      "linkedId": "CLM-100124",
+      "statusChanged": "Submitted"
+    },
+    {
+      "id": "CLM-100123",
+      "type": "Additional Documentation Request",
+      "patientName": "N/A",
+      "lastUpdated": "2025-12-13T10:30:00Z",
+      "currentStatus": "Requested",
+      "itemType": "ADR",
+      "linkedId": "CLM-100123",
+      "statusChanged": "Requested"
+    },
+    {
+      "id": "PA-001253",
+      "type": "Prior Auth Request",
+      "itemType": "PA",
+      "linkedId": "PA-001253",
+      "statusChanged": "Partial Affirmation",
+      "patientId": "P-45910",
+      "patientName": "Quinn R.",
+      "lastUpdated": "2025-12-12T15:00:00Z",
+      "currentStatus": "Partial Affirmation"
+    },
+    {
       "id": "PA-001234",
       "type": "Prior Auth Request",
       "itemType": "PA",
       "linkedId": "PA-001234",
-      "statusChanged": "Pending",
+      "statusChanged": "Affirmed",
       "patientId": "P-45890",
       "patientName": "John D.",
       "lastUpdated": "2025-12-12T14:30:00Z",
-      "currentStatus": "Pending"
+      "currentStatus": "Affirmed"
+    },
+    {
+      "id": "CLM-100125",
+      "type": "Additional Documentation Request",
+      "patientName": "N/A",
+      "lastUpdated": "2025-12-12T09:30:00Z",
+      "currentStatus": "Under Review",
+      "itemType": "ADR",
+      "linkedId": "CLM-100125",
+      "statusChanged": "Under Review"
     },
     {
       "id": "TKT-000567",
@@ -21,15 +94,20 @@
       "currentStatus": "Awaiting Provider Response"
     },
     {
-      "id": "PA-001235",
-      "type": "Prior Auth Request",
-      "itemType": "PA",
-      "linkedId": "PA-001235",
-      "statusChanged": "Affirmed",
-      "patientId": "P-45891",
-      "patientName": "Jane S.",
+      "id": "P2P-003",
+      "type": "P2P Call Activity",
+      "itemType": "P2P",
+      "linkedId": "PA-001241",
+      "statusChanged": "Scheduled",
+      "patientId": "P-45897",
+      "patientName": "Pat L.",
       "lastUpdated": "2025-12-11T09:45:00Z",
-      "currentStatus": "Affirmed"
+      "currentStatus": "Scheduled",
+      "p2pDetails": {
+        "scheduledDate": "2025-12-19",
+        "scheduledTime": "11:00 AM",
+        "medicalDirectorName": "Dr. Michael Brown"
+      }
     },
     {
       "id": "PA-001236",
@@ -38,7 +116,7 @@
       "linkedId": "PA-001236",
       "statusChanged": "Non-Affirmed",
       "patientId": "P-45892",
-      "patientName": "Sam R.",
+      "patientName": "Robert M.",
       "lastUpdated": "2025-12-10T16:30:00Z",
       "currentStatus": "Non-Affirmed"
     },
@@ -51,26 +129,45 @@
       "currentStatus": "Resolved"
     },
     {
-      "id": "PA-001237",
-      "type": "Prior Auth Request",
-      "itemType": "PA",
-      "linkedId": "PA-001237",
-      "statusChanged": "Pending",
-      "patientId": "P-45893",
-      "patientName": "Chris P.",
+      "id": "P2P-005",
+      "type": "P2P Call Activity",
+      "itemType": "P2P",
+      "linkedId": "PA-001244",
+      "statusChanged": "Requested",
+      "patientId": "P-45900",
+      "patientName": "Jordan F.",
       "lastUpdated": "2025-12-09T14:00:00Z",
-      "currentStatus": "Pending"
+      "currentStatus": "Requested"
     },
     {
-      "id": "PA-001238",
-      "type": "Prior Auth Request",
-      "itemType": "PA",
-      "linkedId": "PA-001238",
-      "statusChanged": "Affirmed",
-      "patientId": "P-45894",
-      "patientName": "Alex T.",
-      "lastUpdated": "2025-12-08T11:30:00Z",
-      "currentStatus": "Affirmed"
+      "id": "P2P-004",
+      "type": "P2P Call Activity",
+      "itemType": "P2P",
+      "linkedId": "PA-001243",
+      "statusChanged": "Completed",
+      "patientId": "P-45899",
+      "patientName": "Kim M.",
+      "lastUpdated": "2025-10-25T09:00:00Z",
+      "currentStatus": "Completed",
+      "p2pDetails": {
+        "outcome": "Upheld",
+        "completedDate": "2025-10-25"
+      }
+    },
+    {
+      "id": "P2P-006",
+      "type": "P2P Call Activity",
+      "itemType": "P2P",
+      "linkedId": "PA-001248",
+      "statusChanged": "Completed",
+      "patientId": "P-45904",
+      "patientName": "Drew V.",
+      "lastUpdated": "2025-09-15T15:00:00Z",
+      "currentStatus": "Completed",
+      "p2pDetails": {
+        "outcome": "Affirmed",
+        "completedDate": "2025-09-15"
+      }
     },
     {
       "id": "TKT-000569",
@@ -85,41 +182,11 @@
       "type": "Prior Auth Request",
       "itemType": "PA",
       "linkedId": "PA-001239",
-      "statusChanged": "Non-Affirmed",
+      "statusChanged": "Affirmed",
       "patientId": "P-45895",
-      "patientName": "Morgan K.",
+      "patientName": "Sam R.",
       "lastUpdated": "2025-12-07T15:10:00Z",
-      "currentStatus": "Non-Affirmed"
-    },
-    {
-      "id": "CLM-100123",
-      "type": "Additional Documentation Request",
-      "patientName": "N/A",
-      "lastUpdated": "2025-12-13T10:30:00Z",
-      "currentStatus": "Requested",
-      "itemType": "ADR",
-      "linkedId": "CLM-100123",
-      "statusChanged": "Requested"
-    },
-    {
-      "id": "CLM-100124",
-      "type": "Additional Documentation Request",
-      "patientName": "N/A",
-      "lastUpdated": "2025-12-13T12:00:00Z",
-      "currentStatus": "Submitted",
-      "itemType": "ADR",
-      "linkedId": "CLM-100124",
-      "statusChanged": "Submitted"
-    },
-    {
-      "id": "CLM-100125",
-      "type": "Additional Documentation Request",
-      "patientName": "N/A",
-      "lastUpdated": "2025-12-12T09:30:00Z",
-      "currentStatus": "Under Review",
-      "itemType": "ADR",
-      "linkedId": "CLM-100125",
-      "statusChanged": "Under Review"
+      "currentStatus": "Affirmed"
     },
     {
       "id": "TKT-000570",

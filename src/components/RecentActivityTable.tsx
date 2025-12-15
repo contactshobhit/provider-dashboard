@@ -11,8 +11,21 @@ import {
   Chip,
   CircularProgress,
   Typography,
+  Tooltip,
 } from '@mui/material';
+import PhoneIcon from '@mui/icons-material/Phone';
+import ScheduleIcon from '@mui/icons-material/Schedule';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { getStatusStyles } from '../utils/statusStyles';
+import { P2POutcome } from '../types';
+
+interface P2PDetails {
+  scheduledDate?: string;
+  scheduledTime?: string;
+  medicalDirectorName?: string;
+  outcome?: P2POutcome;
+  completedDate?: string;
+}
 
 interface ActivityRow {
   id: string;
@@ -20,9 +33,10 @@ interface ActivityRow {
   patientName?: string;
   lastUpdated: string;
   currentStatus: string;
-  itemType?: 'PA' | 'ADR' | string;
+  itemType?: 'PA' | 'ADR' | 'P2P' | string;
   linkedId?: string;
   topic?: string;
+  p2pDetails?: P2PDetails;
 }
 
 interface RecentActivityTableProps {
@@ -41,9 +55,39 @@ const RecentActivityTable: React.FC<RecentActivityTableProps> = ({ data, loading
       navigate(`/support/tickets?ticketId=${encodeURIComponent(row.id)}&category=${encodeURIComponent(category)}`);
     } else if (row.itemType === 'PA' && row.linkedId) {
       navigate(`/pa/search?paId=${encodeURIComponent(row.linkedId)}`);
+    } else if (row.itemType === 'P2P' && row.linkedId) {
+      // Navigate to PA detail to see P2P activity
+      navigate(`/pa/details/${encodeURIComponent(row.linkedId)}`);
     } else if (row.itemType === 'ADR' && row.linkedId) {
       navigate(`/adr/management?claimId=${encodeURIComponent(row.linkedId)}`);
     }
+  };
+
+  const getP2PIcon = (status: string) => {
+    switch (status) {
+      case 'Requested':
+        return <PhoneIcon sx={{ fontSize: 14 }} />;
+      case 'Scheduled':
+        return <ScheduleIcon sx={{ fontSize: 14 }} />;
+      case 'Completed':
+        return <CheckCircleIcon sx={{ fontSize: 14 }} />;
+      default:
+        return null;
+    }
+  };
+
+  const getP2PTooltip = (row: ActivityRow): string => {
+    if (row.itemType !== 'P2P') return '';
+    const details = row.p2pDetails;
+    if (!details) return '';
+
+    if (row.currentStatus === 'Scheduled' && details.scheduledDate) {
+      return `Scheduled: ${details.scheduledDate} ${details.scheduledTime || ''} with ${details.medicalDirectorName || 'MD'}`;
+    }
+    if (row.currentStatus === 'Completed' && details.outcome) {
+      return `Outcome: ${details.outcome}`;
+    }
+    return '';
   };
 
   return (
@@ -75,26 +119,50 @@ const RecentActivityTable: React.FC<RecentActivityTableProps> = ({ data, loading
                   sx={{
                     '& td': { py: 0.5, px: 1, fontSize: 14 },
                     cursor:
-                      row.itemType === 'PA' || row.itemType === 'ADR' || row.type === 'Support Ticket'
+                      row.itemType === 'PA' || row.itemType === 'ADR' || row.itemType === 'P2P' || row.type === 'Support Ticket'
                         ? 'pointer'
                         : 'default',
                   }}
                   onClick={() => handleRowClick(row)}
                 >
-                  <TableCell>{row.id}</TableCell>
+                  <TableCell>
+                    {row.itemType === 'P2P' ? (
+                      <Tooltip title={`View PA ${row.linkedId}`}>
+                        <span>{row.linkedId}</span>
+                      </Tooltip>
+                    ) : (
+                      row.id
+                    )}
+                  </TableCell>
                   <TableCell>{row.type === 'Support Ticket' ? row.topic || row.type : row.type}</TableCell>
                   <TableCell>{row.patientName}</TableCell>
                   <TableCell>{new Date(row.lastUpdated).toLocaleString()}</TableCell>
                   <TableCell>
-                    <Chip
-                      label={row.currentStatus}
-                      variant="filled"
-                      size="small"
-                      sx={{
-                        fontWeight: 600,
-                        ...getStatusStyles(row.currentStatus),
-                      }}
-                    />
+                    {row.itemType === 'P2P' ? (
+                      <Tooltip title={getP2PTooltip(row)}>
+                        <Chip
+                          icon={getP2PIcon(row.currentStatus)}
+                          label={row.currentStatus}
+                          variant="filled"
+                          size="small"
+                          sx={{
+                            fontWeight: 600,
+                            ...getStatusStyles(row.currentStatus),
+                            '& .MuiChip-icon': { color: 'inherit' },
+                          }}
+                        />
+                      </Tooltip>
+                    ) : (
+                      <Chip
+                        label={row.currentStatus}
+                        variant="filled"
+                        size="small"
+                        sx={{
+                          fontWeight: 600,
+                          ...getStatusStyles(row.currentStatus),
+                        }}
+                      />
+                    )}
                   </TableCell>
                 </TableRow>
               ))

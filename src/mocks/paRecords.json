@@ -5,21 +5,21 @@
     "pageSize": 50,
     "currentPage": 1,
     "records": [
-      { "id": "PA-001234", "patientName": "John D.", "requestDate": "2025-11-20", "serviceType": "MRI Scan", "status": "Affirmed", "determinationDate": "2025-11-22", "submittedRecords": 5, "peerToPeerRequested": false },
-      { "id": "PA-001235", "patientName": "Sarah K.", "requestDate": "2025-11-21", "serviceType": "Chemotherapy", "status": "Pending", "determinationDate": "N/A", "submittedRecords": 10, "peerToPeerRequested": true },
-      { "id": "PA-001236", "patientName": "Alex T.", "requestDate": "2025-11-22", "serviceType": "CT Scan", "status": "Non-Affirmed", "determinationDate": "2025-11-24", "submittedRecords": 3, "peerToPeerRequested": false },
-      { "id": "PA-001237", "patientName": "Morgan K.", "requestDate": "2025-11-23", "serviceType": "Physical Therapy", "status": "Affirmed", "determinationDate": "2025-11-25", "submittedRecords": 2, "peerToPeerRequested": false },
-      { "id": "PA-001238", "patientName": "Chris P.", "requestDate": "2025-11-24", "serviceType": "Surgery", "status": "Pending", "determinationDate": "N/A", "submittedRecords": 7, "peerToPeerRequested": true },
-      { "id": "PA-001239", "patientName": "Sam R.", "requestDate": "2025-11-25", "serviceType": "X-Ray", "status": "Non-Affirmed", "determinationDate": "2025-11-27", "submittedRecords": 1, "peerToPeerRequested": false },
-      { "id": "PA-001240", "patientName": "Jane S.", "requestDate": "2025-11-26", "serviceType": "Lab Test", "status": "Affirmed", "determinationDate": "2025-11-28", "submittedRecords": 4, "peerToPeerRequested": false },
-      { "id": "PA-001241", "patientName": "Pat L.", "requestDate": "2025-11-27", "serviceType": "Ultrasound", "status": "Pending", "determinationDate": "N/A", "submittedRecords": 6, "peerToPeerRequested": true },
-      { "id": "PA-001242", "patientName": "Lee W.", "requestDate": "2025-11-28", "serviceType": "Blood Work", "status": "Non-Affirmed", "determinationDate": "2025-11-30", "submittedRecords": 2, "peerToPeerRequested": false },
-      { "id": "PA-001243", "patientName": "Kim M.", "requestDate": "2025-11-29", "serviceType": "MRI Scan", "status": "Affirmed", "determinationDate": "2025-12-01", "submittedRecords": 8, "peerToPeerRequested": false },
-      { "id": "PA-001244", "patientName": "Jordan F.", "requestDate": "2025-11-30", "serviceType": "CT Scan", "status": "Pending", "determinationDate": "N/A", "submittedRecords": 5, "peerToPeerRequested": true },
-      { "id": "PA-001245", "patientName": "Taylor B.", "requestDate": "2025-12-01", "serviceType": "Surgery", "status": "Non-Affirmed", "determinationDate": "2025-12-03", "submittedRecords": 3, "peerToPeerRequested": false },
-      { "id": "PA-001246", "patientName": "Casey N.", "requestDate": "2025-12-02", "serviceType": "Physical Therapy", "status": "Affirmed", "determinationDate": "2025-12-04", "submittedRecords": 2, "peerToPeerRequested": false },
-      { "id": "PA-001247", "patientName": "Riley Q.", "requestDate": "2025-12-03", "serviceType": "Lab Test", "status": "Pending", "determinationDate": "N/A", "submittedRecords": 4, "peerToPeerRequested": true },
-      { "id": "PA-001248", "patientName": "Drew V.", "requestDate": "2025-12-04", "serviceType": "X-Ray", "status": "Non-Affirmed", "determinationDate": "2025-12-06", "submittedRecords": 1, "peerToPeerRequested": false }
+      { "id": "PA-001234", "patientName": "John D.", "requestDate": "2025-11-20", "serviceType": "Spinal Fusion", "status": "Affirmed", "determinationDate": "2025-11-22", "submittedRecords": 5, "utn": "98765432101234" },
+      { "id": "PA-001235", "patientName": "Sarah K.", "requestDate": "2025-11-21", "serviceType": "Total Knee Arthroplasty", "status": "Non-Affirmed", "determinationDate": "2025-11-25", "submittedRecords": 10, "utn": "98765432105678" },
+      { "id": "PA-001236", "patientName": "Alex T.", "requestDate": "2025-11-22", "serviceType": "Spinal Cord Stimulator", "status": "Non-Affirmed", "determinationDate": "2025-11-24", "submittedRecords": 3, "utn": "12345678901234" },
+      { "id": "PA-001237", "patientName": "Morgan K.", "requestDate": "2025-11-23", "serviceType": "Lumbar Discectomy", "status": "Affirmed", "determinationDate": "2025-11-25", "submittedRecords": 2, "utn": "23456789012345" },
+      { "id": "PA-001238", "patientName": "Chris P.", "requestDate": "2025-11-24", "serviceType": "Partial Knee Replacement", "status": "Partial Affirmation", "determinationDate": "2025-11-28", "submittedRecords": 7, "utn": "67890123456789" },
+      { "id": "PA-001239", "patientName": "Sam R.", "requestDate": "2025-11-25", "serviceType": "Skin Substitute Graft", "status": "Non-Affirmed", "determinationDate": "2025-11-27", "submittedRecords": 1, "utn": "56789012345678" },
+      { "id": "PA-001240", "patientName": "Jane S.", "requestDate": "2025-11-26", "serviceType": "Cervical Spinal Fusion", "status": "Affirmed", "determinationDate": "2025-11-28", "submittedRecords": 4, "utn": "34567890123456" },
+      { "id": "PA-001241", "patientName": "Pat L.", "requestDate": "2025-11-27", "serviceType": "Total Hip Arthroplasty", "status": "Non-Affirmed", "determinationDate": "2025-12-01", "submittedRecords": 6, "utn": "78901234567890" },
+      { "id": "PA-001242", "patientName": "Lee W.", "requestDate": "2025-11-28", "serviceType": "Sacroiliac Joint Fusion", "status": "Non-Affirmed", "determinationDate": "2025-11-30", "submittedRecords": 2, "utn": "45678901234567" },
+      { "id": "PA-001243", "patientName": "Kim M.", "requestDate": "2025-11-29", "serviceType": "Peripheral Nerve Stimulator", "status": "Affirmed", "determinationDate": "2025-12-01", "submittedRecords": 8, "utn": "11122233344455" },
+      { "id": "PA-001244", "patientName": "Jordan F.", "requestDate": "2025-11-30", "serviceType": "Arthroscopic Shoulder Surgery", "status": "Non-Affirmed", "determinationDate": "2025-12-04", "submittedRecords": 5, "utn": "89012345678901" },
+      { "id": "PA-001245", "patientName": "Taylor B.", "requestDate": "2025-12-01", "serviceType": "Vertebroplasty", "status": "Non-Affirmed", "determinationDate": "2025-12-03", "submittedRecords": 3, "utn": "90123456789012" },
+      { "id": "PA-001246", "patientName": "Casey N.", "requestDate": "2025-12-02", "serviceType": "Implantable Infusion Pump", "status": "Affirmed", "determinationDate": "2025-12-04", "submittedRecords": 2, "utn": "01234567890123" },
+      { "id": "PA-001247", "patientName": "Riley Q.", "requestDate": "2025-12-03", "serviceType": "Rotator Cuff Repair", "status": "Under Review", "submittedRecords": 4 },
+      { "id": "PA-001248", "patientName": "Drew V.", "requestDate": "2025-12-04", "serviceType": "Carpal Tunnel Release", "status": "Non-Affirmed", "determinationDate": "2025-12-06", "submittedRecords": 1, "utn": "55566677788899" }
     ]
   }
 }

@@ -22,6 +22,7 @@ const AppRouter: React.FC = () => (
         <Route path="/support/tickets" element={<SupportChatPage />} />
         <Route path="/p2p/request" element={<PeerToPeerRequestPage />} />
         <Route path="/pa/p2p" element={<PeerToPeerRequestPage />} />
+        <Route path="/pa/p2p/:paId" element={<PeerToPeerRequestPage />} />
         <Route path="/adr/management" element={<ADRManagementPage />} />
         <Route path="/adr/submit/:claimId" element={<ADRSubmissionForm />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />

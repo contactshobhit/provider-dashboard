@@ -73,13 +73,13 @@ const DashboardLayout: React.FC = () => {
       <Grid container spacing={2}>
         <Grid size={{ xs: 12, md: 4 }}>
           <SummaryCard
-            title="Pending PAs"
-            count={summary?.pendingPAsCount}
-            subtitle="Prior Auth requests pending review"
+            title="Under Review"
+            count={summary?.underReviewCount}
+            subtitle="Prior Auth requests under medical review"
             loading={summaryLoading}
             error={summaryError}
             onRefresh={loadSummary}
-            onClick={() => navigate('/pa/search?status=pending')}
+            onClick={() => navigate('/pa/search?status=Under%20Review')}
             cardSx={{ bgcolor: '#FFF8E1', borderTop: '5px solid #FFC107' }}
             countColor="#FFA000"
           />
@@ -108,6 +108,32 @@ const DashboardLayout: React.FC = () => {
             onClick={() => navigate('/support/tickets')}
             cardSx={{ bgcolor: '#FFEBEE', borderTop: '5px solid #F44336' }}
             countColor="#F44336"
+          />
+        </Grid>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <SummaryCard
+            title="P2P Scheduled"
+            count={summary?.p2pScheduledCount}
+            subtitle="Peer-to-Peer calls scheduled"
+            loading={summaryLoading}
+            error={summaryError}
+            onRefresh={loadSummary}
+            onClick={() => navigate('/pa/search?activity=p2p_scheduled')}
+            cardSx={{ bgcolor: '#E3F2FD', borderTop: '5px solid #1565C0' }}
+            countColor="#1565C0"
+          />
+        </Grid>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <SummaryCard
+            title="P2P Requested"
+            count={summary?.p2pRequestedCount}
+            subtitle="Peer-to-Peer calls awaiting scheduling"
+            loading={summaryLoading}
+            error={summaryError}
+            onRefresh={loadSummary}
+            onClick={() => navigate('/pa/search?activity=p2p_requested')}
+            cardSx={{ bgcolor: '#EDE7F6', borderTop: '5px solid #5E35B1' }}
+            countColor="#5E35B1"
           />
         </Grid>
       </Grid>

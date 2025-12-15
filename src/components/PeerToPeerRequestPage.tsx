@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PageLayout from './layout/PageLayout';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -14,7 +14,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { PAStatus } from '../types';
 
 interface MockProvider {
@@ -59,18 +59,25 @@ const MOCK_PROVIDER: MockProvider = {
 };
 
 const MOCK_PA_LIST: PAListItem[] = [
-  { id: 'PA-001235', status: 'Pending' },
+  { id: 'PA-001235', status: 'Non-Affirmed' },
   { id: 'PA-001236', status: 'Non-Affirmed' },
-  { id: 'PA-001240', status: 'Pending' },
+  { id: 'PA-001238', status: 'Partial Affirmation' },
   { id: 'PA-001241', status: 'Non-Affirmed' },
-  { id: 'PA-001245', status: 'Pending' },
-  { id: 'PA-001246', status: 'Non-Affirmed' },
+  { id: 'PA-001244', status: 'Non-Affirmed' },
+  { id: 'PA-001246', status: 'Partial Affirmation' },
+  { id: 'PA-001251', status: 'Partial Affirmation' },
+  { id: 'PA-001252', status: 'Partial Affirmation' },
+  { id: 'PA-001253', status: 'Partial Affirmation' },
 ];
 
-const TIME_SLOTS = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00'];
+const TIME_SLOTS = [
+  '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
+  '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30',
+];
 
 const PeerToPeerRequestPage: React.FC = () => {
   const navigate = useNavigate();
+  const { paId: urlPaId } = useParams<{ paId: string }>();
   const [form, setForm] = useState<FormState>({
     paId: '',
     providerName: MOCK_PROVIDER.name,
@@ -86,6 +93,13 @@ const PeerToPeerRequestPage: React.FC = () => {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [confirmationOpen, setConfirmationOpen] = useState<boolean>(false);
+
+  // Pre-select PA ID from URL parameter
+  useEffect(() => {
+    if (urlPaId) {
+      setForm((prev) => ({ ...prev, paId: urlPaId }));
+    }
+  }, [urlPaId]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>

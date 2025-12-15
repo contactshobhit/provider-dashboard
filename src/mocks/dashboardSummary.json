@@ -1,11 +1,13 @@
 {
   "status": "success",
   "data": {
-    "pendingPAsCount": 14,
+    "underReviewCount": 14,
     "recentDeterminationsCount": 55,
     "affirmedIn7Days": 42,
     "nonAffirmedIn7Days": 13,
     "openTicketsCount": 3,
-    "recentP2PRequestsCount": 7
+    "p2pScheduledCount": 3,
+    "p2pRequestedCount": 1,
+    "p2pCompletedCount": 2
   }
 }

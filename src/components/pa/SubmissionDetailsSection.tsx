@@ -139,10 +139,17 @@ const SubmissionDetailsSection: React.FC<SubmissionDetailsSectionProps> = ({
             label="Submitted Date"
             type="date"
             value={values.submittedDate}
-            onChange={onChange}
             fullWidth
             InputLabelProps={{ shrink: true }}
-            sx={{ width: 220 }}
+            InputProps={{ readOnly: true }}
+            sx={{
+              width: 220,
+              '& .MuiInputBase-input': {
+                bgcolor: '#f5f5f5',
+                color: 'text.secondary',
+              },
+            }}
+            helperText="Auto-populated with today's date"
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>

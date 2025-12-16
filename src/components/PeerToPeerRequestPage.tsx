@@ -39,7 +39,6 @@ interface FormState {
   time2: string;
   date3: string;
   time3: string;
-  reason: string;
 }
 
 interface FormErrors {
@@ -49,7 +48,6 @@ interface FormErrors {
   date1?: string;
   time1?: string;
   time2?: string;
-  reason?: string;
 }
 
 const MOCK_PROVIDER: MockProvider = {
@@ -89,7 +87,6 @@ const PeerToPeerRequestPage: React.FC = () => {
     time2: '',
     date3: '',
     time3: '',
-    reason: '',
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [confirmationOpen, setConfirmationOpen] = useState<boolean>(false);
@@ -115,7 +112,6 @@ const PeerToPeerRequestPage: React.FC = () => {
     if (!form.email) newErrors.email = 'Required';
     if (!form.date1) newErrors.date1 = 'Required';
     if (!form.time1) newErrors.time1 = 'Required';
-    if (!form.reason) newErrors.reason = 'Required';
     if (
       form.date1 &&
       form.date2 &&
@@ -368,19 +364,6 @@ const PeerToPeerRequestPage: React.FC = () => {
                 </Box>
               </Box>
             </Box>
-            <TextField
-              fullWidth
-              label="Reason for Request"
-              name="reason"
-              margin="normal"
-              required
-              multiline
-              minRows={3}
-              value={form.reason}
-              onChange={handleChange}
-              error={!!errors.reason}
-              helperText={errors.reason}
-            />
             <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
               <Button
                 variant="contained"

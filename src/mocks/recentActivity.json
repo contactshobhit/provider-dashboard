@@ -36,7 +36,7 @@
     {
       "id": "CLM-100124",
       "type": "Additional Documentation Request",
-      "patientName": "N/A",
+      "patientName": "Mary Johnson",
       "lastUpdated": "2025-12-13T12:00:00Z",
       "currentStatus": "Submitted",
       "itemType": "ADR",
@@ -46,7 +46,7 @@
     {
       "id": "CLM-100123",
       "type": "Additional Documentation Request",
-      "patientName": "N/A",
+      "patientName": "John Smith",
       "lastUpdated": "2025-12-13T10:30:00Z",
       "currentStatus": "Requested",
       "itemType": "ADR",
@@ -78,7 +78,7 @@
     {
       "id": "CLM-100125",
       "type": "Additional Documentation Request",
-      "patientName": "N/A",
+      "patientName": "Robert Davis",
       "lastUpdated": "2025-12-12T09:30:00Z",
       "currentStatus": "Under Review",
       "itemType": "ADR",

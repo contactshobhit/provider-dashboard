@@ -13,13 +13,13 @@ const BeneficiaryInfoSection: React.FC<BeneficiaryInfoSectionProps> = ({ values,
   return (
     <Box>
       <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-        B. Beneficiary Information
+        Beneficiary Information
       </Typography>
       <Grid container spacing={2}>
-        <Grid size={6}>
+        <Grid size={3}>
           <TextField
             name="beneficiaryLastName"
-            label="Beneficiary Last Name *"
+            label="Last Name *"
             value={values.beneficiaryLastName}
             onChange={onChange}
             fullWidth
@@ -31,10 +31,10 @@ const BeneficiaryInfoSection: React.FC<BeneficiaryInfoSectionProps> = ({ values,
             }}
           />
         </Grid>
-        <Grid size={6}>
+        <Grid size={3}>
           <TextField
             name="beneficiaryFirstName"
-            label="Beneficiary First Name *"
+            label="First Name *"
             value={values.beneficiaryFirstName}
             onChange={onChange}
             fullWidth
@@ -46,7 +46,7 @@ const BeneficiaryInfoSection: React.FC<BeneficiaryInfoSectionProps> = ({ values,
             }}
           />
         </Grid>
-        <Grid size={6}>
+        <Grid size={3}>
           <TextField
             name="medicareId"
             label="Medicare ID *"
@@ -61,10 +61,10 @@ const BeneficiaryInfoSection: React.FC<BeneficiaryInfoSectionProps> = ({ values,
             }}
           />
         </Grid>
-        <Grid size={6}>
+        <Grid size={3}>
           <TextField
             name="beneficiaryDob"
-            label="Beneficiary Date of Birth *"
+            label="Date of Birth *"
             type="date"
             value={values.beneficiaryDob}
             onChange={onChange}

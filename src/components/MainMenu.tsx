@@ -8,17 +8,19 @@ import SupervisorAccountOutlinedIcon from '@mui/icons-material/SupervisorAccount
 import Button from '@mui/material/Button';
 import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurnedInOutlined';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { featureFlags } from '../config/featureFlags';
 
 interface MenuItem {
   text: string;
   icon: React.ReactNode;
   path: string;
+  featureFlag?: keyof typeof featureFlags;
 }
 
 const menuItems: MenuItem[] = [
   { text: 'Dashboard', icon: <HomeOutlinedIcon />, path: '/dashboard' },
   { text: 'PA Request Search & Status', icon: <SearchOutlinedIcon />, path: '/pa/search' },
-  { text: 'Support Chat', icon: <ChatBubbleOutlineRoundedIcon />, path: '/support/tickets' },
+  { text: 'Support Chat', icon: <ChatBubbleOutlineRoundedIcon />, path: '/support/tickets', featureFlag: 'enableSupportChat' },
   { text: 'Peer-to-Peer Request', icon: <SupervisorAccountOutlinedIcon />, path: '/pa/p2p' },
   { text: 'ADR Management', icon: <AssignmentTurnedInOutlinedIcon />, path: '/adr/management' },
 ];
@@ -63,7 +65,9 @@ const MainMenu: React.FC = () => {
             START PA REQUEST
           </Button>
         </ListItem>
-        {menuItems.map((item) => {
+        {menuItems
+          .filter((item) => !item.featureFlag || featureFlags[item.featureFlag])
+          .map((item) => {
           const isActive = location.pathname === item.path;
           return (
             <ListItem key={item.text} disablePadding>

@@ -18,6 +18,7 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { getStatusStyles } from '../utils/statusStyles';
 import { P2POutcome } from '../types';
+import { featureFlags } from '../config/featureFlags';
 
 interface P2PDetails {
   scheduledDate?: string;
@@ -48,8 +49,13 @@ interface RecentActivityTableProps {
 const RecentActivityTable: React.FC<RecentActivityTableProps> = ({ data, loading, error }) => {
   const navigate = useNavigate();
 
+  // Filter out Support Ticket rows when feature flag is disabled
+  const filteredData = featureFlags.enableSupportChat
+    ? data
+    : data.filter((row) => row.type !== 'Support Ticket');
+
   const handleRowClick = (row: ActivityRow): void => {
-    if (row.type === 'Support Ticket' && row.id) {
+    if (row.type === 'Support Ticket' && row.id && featureFlags.enableSupportChat) {
       // Use patientName as category if available, else fallback to type
       const category = row.patientName || row.type;
       navigate(`/support/tickets?ticketId=${encodeURIComponent(row.id)}&category=${encodeURIComponent(category)}`);
@@ -110,8 +116,8 @@ const RecentActivityTable: React.FC<RecentActivityTableProps> = ({ data, loading
             </TableRow>
           </TableHead>
           <TableBody>
-            {data && data.length > 0 ? (
-              data.map((row) => (
+            {filteredData && filteredData.length > 0 ? (
+              filteredData.map((row) => (
                 <TableRow
                   key={row.id}
                   hover

@@ -10,6 +10,7 @@ import ADRManagementPage from './components/ADRManagementPage';
 import PeerToPeerRequestPage from './components/PeerToPeerRequestPage';
 import ADRSubmissionForm from './components/ADRSubmissionForm';
 import PADetailView from './components/PADetailView';
+import { featureFlags } from './config/featureFlags';
 
 const AppRouter: React.FC = () => (
   <ErrorBoundary>
@@ -19,7 +20,9 @@ const AppRouter: React.FC = () => (
         <Route path="/pa/new" element={<PriorAuthSubmissionPage />} />
         <Route path="/pa/search" element={<PriorAuthSearchPage />} />
         <Route path="/pa/details/:paId" element={<PADetailView />} />
-        <Route path="/support/tickets" element={<SupportChatPage />} />
+        {featureFlags.enableSupportChat && (
+          <Route path="/support/tickets" element={<SupportChatPage />} />
+        )}
         <Route path="/p2p/request" element={<PeerToPeerRequestPage />} />
         <Route path="/pa/p2p" element={<PeerToPeerRequestPage />} />
         <Route path="/pa/p2p/:paId" element={<PeerToPeerRequestPage />} />

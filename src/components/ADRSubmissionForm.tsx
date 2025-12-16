@@ -109,7 +109,10 @@ const ADRSubmissionForm: React.FC<ADRSubmissionFormProps> = ({ open = true, onCl
             Claim Number: <Chip label={adr.claimId} color="primary" sx={{ fontWeight: 700, fontSize: 16 }} />
           </Typography>
           <Typography variant="subtitle1" sx={{ mt: 1 }}>
-            UTN: <Chip label={adr.utn} color="info" sx={{ fontWeight: 700, fontSize: 15 }} />
+            Patient: <strong>{adr.patientName}</strong> (Member ID: {adr.memberId})
+          </Typography>
+          <Typography variant="subtitle1" sx={{ mt: 1 }}>
+            Date of Service: <strong>{adr.dateOfService}</strong>
           </Typography>
           <Typography variant="subtitle1" sx={{ mt: 1, color: 'error.main', fontWeight: 700 }}>
             ADR Deadline: {adr.dueDate}

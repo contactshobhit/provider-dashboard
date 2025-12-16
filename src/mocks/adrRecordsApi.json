@@ -2,9 +2,65 @@
   "status": "success",
   "data": {
     "records": [
-      { "claimId": "CLM-100123", "paId": "PA-001234", "utn": "98765432101234", "documentSummary": "Clinical Notes", "dueDate": "2025-12-20", "adrStatus": "Requested" },
-      { "claimId": "CLM-100124", "paId": "PA-001236", "utn": "12345678901234", "documentSummary": "Lab Results, Imaging", "dueDate": "2025-12-18", "adrStatus": "Submitted" },
-      { "claimId": "CLM-100125", "paId": "", "utn": "23456789012345", "documentSummary": "Operative Report", "dueDate": "2025-12-22", "adrStatus": "Under Review" }
+      {
+        "claimId": "CLM-100123",
+        "memberId": "MBR-98765432",
+        "patientName": "John Smith",
+        "dateOfService": "2025-11-15",
+        "documentSummary": "Clinical Notes, Progress Notes",
+        "dueDate": "2025-12-20",
+        "adrStatus": "Requested"
+      },
+      {
+        "claimId": "CLM-100124",
+        "memberId": "MBR-12345678",
+        "patientName": "Mary Johnson",
+        "dateOfService": "2025-11-10",
+        "documentSummary": "Lab Results, Imaging Reports",
+        "dueDate": "2025-12-18",
+        "adrStatus": "Submitted",
+        "submittedDocuments": ["lab_results_11102025.pdf", "mri_report.pdf"]
+      },
+      {
+        "claimId": "CLM-100125",
+        "memberId": "MBR-55667788",
+        "patientName": "Robert Davis",
+        "dateOfService": "2025-11-08",
+        "documentSummary": "Operative Report, Anesthesia Records",
+        "dueDate": "2025-12-22",
+        "adrStatus": "Under Review",
+        "submittedDocuments": ["operative_report.pdf", "anesthesia_record.pdf"]
+      },
+      {
+        "claimId": "CLM-100126",
+        "memberId": "MBR-11223344",
+        "patientName": "Sarah Wilson",
+        "dateOfService": "2025-10-25",
+        "documentSummary": "Discharge Summary",
+        "dueDate": "2025-12-10",
+        "adrStatus": "Approved",
+        "submittedDocuments": ["discharge_summary.pdf"]
+      },
+      {
+        "claimId": "CLM-100127",
+        "memberId": "MBR-99887766",
+        "patientName": "Michael Brown",
+        "dateOfService": "2025-10-20",
+        "documentSummary": "Medical Necessity Documentation",
+        "dueDate": "2025-12-05",
+        "adrStatus": "Denied",
+        "submittedDocuments": ["medical_necessity_letter.pdf"]
+      },
+      {
+        "claimId": "CLM-100128",
+        "memberId": "MBR-44556677",
+        "patientName": "Emily Taylor",
+        "dateOfService": "2025-11-01",
+        "documentSummary": "Physical Therapy Notes, Treatment Plan",
+        "dueDate": "2025-12-15",
+        "adrStatus": "Partially Approved",
+        "submittedDocuments": ["pt_notes.pdf", "treatment_plan.pdf"]
+      }
     ]
   }
 }

@@ -1,11 +1,20 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import Snackbar from '@mui/material/Snackbar';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import DescriptionIcon from '@mui/icons-material/Description';
 import PageLayout from './layout/PageLayout';
 import { Box, Toolbar, Typography, Chip, Button, TextField } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { fetchADRRecords } from '../api/adr';
-import { ADRRecord, ADRStatus } from '../types';
+import { ADRRecord } from '../types';
 import { getStatusChipColor } from '../utils/statusStyles';
 import { formatDateUS } from '../utils/dateFormat';
 
@@ -28,6 +37,11 @@ const ADRManagementPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string }>({ open: false, message: '' });
+  const [viewDocsDialog, setViewDocsDialog] = useState<{ open: boolean; claimId: string; documents: string[] }>({
+    open: false,
+    claimId: '',
+    documents: [],
+  });
 
   // Set up highlight timeout on mount if there's an initial claimId
   useEffect(() => {
@@ -81,38 +95,67 @@ const ADRManagementPage: React.FC = () => {
     void showSnackbar();
   }, [state, loadRecords]);
 
+  const handleViewDocuments = (claimId: string, documents: string[]): void => {
+    setViewDocsDialog({ open: true, claimId, documents });
+  };
+
   const columns: GridColDef[] = [
     {
       field: 'claimId',
       headerName: 'Claim Number',
-      width: 140,
+      width: 130,
       headerAlign: 'center',
       align: 'center',
       renderCell: (params: GridRenderCellParams) => <strong>{params.value}</strong>,
     },
     {
-      field: 'paId',
-      headerName: 'Associated PA ID',
-      width: 140,
+      field: 'memberId',
+      headerName: 'Member ID',
+      width: 130,
       headerAlign: 'center',
       align: 'center',
-      renderCell: (params: GridRenderCellParams) =>
-        params.value ? params.value : <span style={{ color: '#aaa' }}>N/A</span>,
     },
-    { field: 'utn', headerName: 'UTN', width: 160, headerAlign: 'center', align: 'center' },
-    { field: 'documentSummary', headerName: 'Requested Docs', width: 200, headerAlign: 'center', align: 'center' },
+    {
+      field: 'patientName',
+      headerName: 'Patient Name',
+      width: 150,
+      headerAlign: 'center',
+      align: 'center',
+    },
+    {
+      field: 'dateOfService',
+      headerName: 'Date of Service',
+      width: 130,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: (params: GridRenderCellParams) => formatDateUS(params.value as string),
+    },
+    {
+      field: 'documentSummary',
+      headerName: 'Requested Docs',
+      width: 200,
+      headerAlign: 'center',
+      align: 'center',
+    },
     {
       field: 'dueDate',
       headerName: 'ADR Deadline',
-      width: 140,
+      width: 130,
       headerAlign: 'center',
       align: 'center',
       renderCell: (params: GridRenderCellParams) => {
         const due = new Date(params.value as string);
         const now = new Date();
-        const isDueSoon = (due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24) <= 3;
+        const daysUntilDue = (due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
+        const isPastDue = daysUntilDue < 0;
+        const isDueSoon = daysUntilDue >= 0 && daysUntilDue <= 3;
         return (
-          <span style={{ color: isDueSoon ? 'red' : undefined, fontWeight: isDueSoon ? 700 : 400 }}>
+          <span
+            style={{
+              color: isPastDue ? '#d32f2f' : isDueSoon ? '#f57c00' : undefined,
+              fontWeight: isPastDue || isDueSoon ? 700 : 400,
+            }}
+          >
             {formatDateUS(params.value as string)}
           </span>
         );
@@ -121,7 +164,7 @@ const ADRManagementPage: React.FC = () => {
     {
       field: 'adrStatus',
       headerName: 'Current Status',
-      width: 140,
+      width: 150,
       headerAlign: 'center',
       align: 'center',
       renderCell: (params: GridRenderCellParams) => (
@@ -140,12 +183,38 @@ const ADRManagementPage: React.FC = () => {
       align: 'center',
       sortable: false,
       filterable: false,
-      renderCell: (params: GridRenderCellParams) =>
-        params.row.adrStatus === 'Requested' ? (
-          <Button variant="contained" color="primary" onClick={() => navigate(`/adr/submit/${params.row.claimId}`)}>
-            SUBMIT DOCUMENTS
-          </Button>
-        ) : null,
+      renderCell: (params: GridRenderCellParams) => {
+        const status = params.row.adrStatus;
+        const documents = params.row.submittedDocuments || [];
+
+        if (status === 'Requested') {
+          return (
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={() => navigate(`/adr/submit/${params.row.claimId}`)}
+            >
+              SUBMIT DOCS
+            </Button>
+          );
+        }
+
+        if (documents.length > 0) {
+          return (
+            <Button
+              variant="outlined"
+              color="primary"
+              size="small"
+              onClick={() => handleViewDocuments(params.row.claimId, documents)}
+            >
+              VIEW DOCS
+            </Button>
+          );
+        }
+
+        return null;
+      },
     },
   ];
 
@@ -154,8 +223,8 @@ const ADRManagementPage: React.FC = () => {
     const q = search.toLowerCase();
     return (
       (row.claimId && row.claimId.toLowerCase().includes(q)) ||
-      (row.paId && row.paId.toLowerCase().includes(q)) ||
-      (row.utn && row.utn.toLowerCase().includes(q))
+      (row.memberId && row.memberId.toLowerCase().includes(q)) ||
+      (row.patientName && row.patientName.toLowerCase().includes(q))
     );
   });
 
@@ -167,14 +236,14 @@ const ADRManagementPage: React.FC = () => {
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, mt: 1 }}>
           <TextField
-            placeholder="Search by Claim Number, PA ID, or UTN"
+            placeholder="Search by Claim Number, Member ID, or Patient Name"
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
               clearHighlight();
             }}
             size="small"
-            sx={{ minWidth: 220, maxWidth: 350 }}
+            sx={{ minWidth: 300, maxWidth: 400 }}
           />
         </Box>
         <Box sx={{ height: 520, width: '100%' }}>
@@ -208,6 +277,31 @@ const ADRManagementPage: React.FC = () => {
           message={snackbar.message}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         />
+        <Dialog
+          open={viewDocsDialog.open}
+          onClose={() => setViewDocsDialog({ open: false, claimId: '', documents: [] })}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle>Submitted Documents - {viewDocsDialog.claimId}</DialogTitle>
+          <DialogContent>
+            <List>
+              {viewDocsDialog.documents.map((doc, index) => (
+                <ListItem key={index}>
+                  <ListItemIcon>
+                    <DescriptionIcon color="primary" />
+                  </ListItemIcon>
+                  <ListItemText primary={doc} />
+                </ListItem>
+              ))}
+            </List>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setViewDocsDialog({ open: false, claimId: '', documents: [] })} color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
         <style>{`
           .highlight-adr-row {
             background-color: #fff9c4 !important;

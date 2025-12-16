@@ -18,16 +18,23 @@ interface FacilityProviderSectionProps {
 }
 
 const FacilityProviderSection: React.FC<FacilityProviderSectionProps> = ({ values, errors, onChange }) => {
+  const isPartA = values.medicarePartType === 'A';
+
+  // Dynamic title based on Part A vs Part B
+  const sectionTitle = isPartA
+    ? 'Facility Provider Information'
+    : 'Facility/Rendering Provider (ASC/Physician) Information';
+
   return (
     <Box>
       <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-        C. Facility/Rendering Provider
+        {sectionTitle}
       </Typography>
       <Grid container spacing={2}>
         <Grid size={6}>
           <TextField
             name="facilityName"
-            label="Facility/Rendering Provider Name *"
+            label="Name *"
             value={values.facilityName}
             onChange={onChange}
             fullWidth
@@ -42,12 +49,11 @@ const FacilityProviderSection: React.FC<FacilityProviderSectionProps> = ({ value
         <Grid size={3}>
           <TextField
             name="facilityNpi"
-            label="Facility/Rendering NPI *"
+            label="NPI *"
             value={values.facilityNpi}
             onChange={onChange}
             fullWidth
             required
-            type="number"
             error={!!errors.facilityNpi}
             helperText={errors.facilityNpi}
             InputLabelProps={{
@@ -58,7 +64,7 @@ const FacilityProviderSection: React.FC<FacilityProviderSectionProps> = ({ value
         <Grid size={3}>
           <TextField
             name="facilityCcn"
-            label="Facility/Rendering CCN *"
+            label="CCN *"
             value={values.facilityCcn}
             onChange={onChange}
             fullWidth
@@ -73,7 +79,7 @@ const FacilityProviderSection: React.FC<FacilityProviderSectionProps> = ({ value
         <Grid size={8}>
           <TextField
             name="facilityAddress1"
-            label="Address Line 1 *"
+            label="Address 1 *"
             value={values.facilityAddress1}
             onChange={onChange}
             fullWidth
@@ -88,7 +94,7 @@ const FacilityProviderSection: React.FC<FacilityProviderSectionProps> = ({ value
         <Grid size={4}>
           <TextField
             name="facilityAddress2"
-            label="Address Line 2"
+            label="Address 2"
             value={values.facilityAddress2}
             onChange={onChange}
             fullWidth

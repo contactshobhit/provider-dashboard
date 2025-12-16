@@ -61,6 +61,10 @@ export interface P2PCall {
 
 export type SubmissionType = 'initial' | 'resubmission' | '';
 
+// Medicare Part Type - determines which fields are shown
+export type MedicarePartType = 'A' | 'B' | '';
+
+// Part B: Location of Service options
 export type LocationOfService =
   | 'office'
   | 'outpatient'
@@ -69,14 +73,37 @@ export type LocationOfService =
   | 'other'
   | '';
 
+// Part A: Place of Service options
+export type PlaceOfService =
+  | 'on-campus-opd'
+  | 'off-campus-opd'
+  | '';
+
+// Part A: Type of Bill options
+export type TypeOfBill =
+  | '131' // Hospital Outpatient - Admit through discharge
+  | '132' // Hospital Outpatient - Interim first claim
+  | '133' // Hospital Outpatient - Interim continuing
+  | '134' // Hospital Outpatient - Interim last claim
+  | '';
+
 // PA Submission Form Values
 export interface PASubmissionFormValues {
+  // Medicare Part Selection
+  medicarePartType: MedicarePartType;
+
   // Section A: Submission Details
   submissionType: SubmissionType;
-  locationOfService: LocationOfService;
   previousUTN: string;
   submittedDate: string;
   anticipatedDateOfService: string;
+
+  // Part B specific
+  locationOfService: LocationOfService;
+
+  // Part A specific
+  placeOfService: PlaceOfService;
+  typeOfBill: TypeOfBill;
 
   // Section B: Beneficiary Info
   beneficiaryLastName: string;
@@ -90,14 +117,22 @@ export interface PASubmissionFormValues {
   units: string[];
   diagnosisCodes: string[];
 
-  // Section D: Physician & Requester
+  // Section D: Physician Info (Part A: Attending, Part B: Ordering/Referring)
   physicianName: string;
-  physicianNpiPtan: string;
+  physicianNpi: string;
+  physicianPtan: string;
+  physicianAddress: string;
+  physicianCity: string;
+  physicianState: string;
+  physicianZip: string;
+
+  // Section E: Requester Info
   requesterName: string;
   requesterPhone: string;
   requesterEmail: string;
+  requesterFax: string;
 
-  // Section E: Facility/Provider
+  // Section F: Facility/Provider
   facilityName: string;
   facilityNpi: string;
   facilityCcn: string;

@@ -28,6 +28,7 @@ import BeneficiaryInfoSection from './pa/BeneficiaryInfoSection';
 import FacilityProviderSection from './pa/FacilityProviderSection';
 import PhysicianRequesterSection from './pa/PhysicianRequesterSection';
 import MedicalRecordUploadSection from './pa/MedicalRecordUploadSection';
+import ReviewSubmitSection from './pa/ReviewSubmitSection';
 import { PASubmissionFormValues, FormErrors } from '../types';
 
 const steps = [
@@ -44,19 +45,35 @@ const getTodayDate = (): string => {
 };
 
 const initialValues: PASubmissionFormValues = {
+  // Medicare Part Selection
+  medicarePartType: '',
+
+  // Submission Details
   submissionType: '',
-  locationOfService: '',
   previousUTN: '',
   submittedDate: getTodayDate(),
   anticipatedDateOfService: '',
+
+  // Part B specific
+  locationOfService: '',
+
+  // Part A specific
+  placeOfService: '',
+  typeOfBill: '',
+
+  // Procedure Codes
   procedureCodes: [''],
   modifiers: [''],
   units: [''],
   diagnosisCodes: ['', '', '', ''],
+
+  // Beneficiary Info
   beneficiaryLastName: '',
   beneficiaryFirstName: '',
   medicareId: '',
   beneficiaryDob: '',
+
+  // Facility/Provider
   facilityName: '',
   facilityNpi: '',
   facilityCcn: '',
@@ -65,11 +82,23 @@ const initialValues: PASubmissionFormValues = {
   facilityCity: '',
   facilityState: '',
   facilityZip: '',
+
+  // Physician Info
   physicianName: '',
-  physicianNpiPtan: '',
+  physicianNpi: '',
+  physicianPtan: '',
+  physicianAddress: '',
+  physicianCity: '',
+  physicianState: '',
+  physicianZip: '',
+
+  // Requester Info
   requesterName: '',
   requesterPhone: '',
   requesterEmail: '',
+  requesterFax: '',
+
+  // Diagnosis & Justification
   diagnosisJustification: '',
 };
 
@@ -193,6 +222,17 @@ const PriorAuthSubmissionPage: React.FC = () => {
     }));
   };
 
+  const handleMedicarePartChange = (part: 'A' | 'B'): void => {
+    setValues((prev) => ({
+      ...prev,
+      medicarePartType: part,
+      // Clear the other part's fields when switching
+      locationOfService: part === 'B' ? prev.locationOfService : '',
+      placeOfService: part === 'A' ? prev.placeOfService : '',
+      typeOfBill: part === 'A' ? prev.typeOfBill : '',
+    }));
+  };
+
   return (
     <PageLayout>
       <Toolbar sx={{ minHeight: 48 }} />
@@ -216,21 +256,26 @@ const PriorAuthSubmissionPage: React.FC = () => {
                   onChange={handleChange}
                   onArrayChange={null}
                   hideProcedureFields
+                  onMedicarePartChange={handleMedicarePartChange}
                 />
-                <Box mt={3}>
-                  <BeneficiaryInfoSection values={values} errors={errors} onChange={handleChange} />
-                </Box>
-                <Box mt={3}>
-                  <ProcedureCodesArraySection
-                    procedureCodes={values.procedureCodes}
-                    modifiers={values.modifiers}
-                    units={values.units}
-                    errors={errors}
-                    onChange={handleArrayChange}
-                    onAdd={handleAddProcedureRow}
-                    onRemove={handleRemoveProcedureRow}
-                  />
-                </Box>
+                {values.medicarePartType && (
+                  <>
+                    <Box mt={3}>
+                      <BeneficiaryInfoSection values={values} errors={errors} onChange={handleChange} />
+                    </Box>
+                    <Box mt={3}>
+                      <ProcedureCodesArraySection
+                        procedureCodes={values.procedureCodes}
+                        modifiers={values.modifiers}
+                        units={values.units}
+                        errors={errors}
+                        onChange={handleArrayChange}
+                        onAdd={handleAddProcedureRow}
+                        onRemove={handleRemoveProcedureRow}
+                      />
+                    </Box>
+                  </>
+                )}
               </Box>
             )}
             {activeStep === 1 && (
@@ -268,7 +313,7 @@ const PriorAuthSubmissionPage: React.FC = () => {
               />
             )}
             {activeStep === 4 && (
-              <Typography variant="body1">Review & Submit (confirmation screen coming soon)</Typography>
+              <ReviewSubmitSection values={values} files={files} />
             )}
           </CardContent>
         </Card>
